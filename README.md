@@ -48,6 +48,7 @@ VSCode
 - [現状のユーザー投稿フロー(PurplePalette Wiki)](https://github.com/PurplePalette/PurplePalette.github.io/wiki)
 - [Sonolus公式サーバーガイド(Sonolus Wiki)](https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Server)
 - [susをsonolus形式に変換するやつ(Github Source)](https://github.com/AskmienFoodoe/miku-yay)
+- [サイトのデザイン案 (Domao)](https://whimsical.com/sonoluscreators-Up6ttsnQeoJCXNVyyb2yaT)
 ### 備考
 - susをsonolus形式に変換するやつはひとまず手を付けない
 - effectやbackground等がカスタマイズできるようだがとりあえずpjsekaiのデフォルト固定仕様で行く
