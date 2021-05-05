@@ -9,7 +9,8 @@
       <v-list-item
         v-for="item in items"
         :key="item.title"
-        link
+        :to="item.to"
+        :href="item.href"
       >
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
@@ -61,7 +62,7 @@ export default class Drawer extends Vue {
     {
       icon: 'mdi-discord',
       title: 'Discordに参加!',
-      to: '/inspire'
+      href: 'https://discord.gg/KEfVkfC6Q9'
     }
   ]
 }
