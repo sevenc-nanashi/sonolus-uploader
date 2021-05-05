@@ -42,7 +42,7 @@
       <img
         height="48px"
         alt="Avatar"
-        src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
+        src="https://cdn.discordapp.com/avatars/153112769724416000/9e10e1f28ff4fe9a13cca1d71002aaf9.png"
         class="rounded-circle"
       >
     </v-btn>

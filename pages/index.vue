@@ -1,10 +1,37 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
+    <v-col cols="12" sm="8" md="10" lg="10">
       <div class="text-center">
-        <logo />
-        <vuetify-logo />
+        <v-img height="40vh" max-height="480px" width="auto" aspect-ratio="4:3" src="https://placehold.jp/640x480.png" />
       </div>
+      <div class="mt-4 text-center">
+        <v-btn large class="secondary">
+          Sonolusの遊び方
+        </v-btn>
+      </div>
+      <div class="mt-6 v-heading text-h4">
+        新着譜面
+      </div>
+      <v-container>
+        <v-row>
+          <v-col
+            v-for="n in 3"
+            :key="n"
+            cols="12"
+            sm="12"
+            md="6"
+            lg="4"
+          >
+            <Fumen :level="n*10" />
+          </v-col>
+        </v-row>
+      </v-container>
+      <div class="mt-4 text-center">
+        <v-btn x-large class="primary">
+          もっと見る
+        </v-btn>
+      </div>
+      <!--
       <v-card>
         <v-card-title class="headline">
           Welcome to the Vuetify + Nuxt.js template
@@ -72,18 +99,20 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      -->
     </v-col>
   </v-row>
 </template>
 
-<script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
+<script lang="ts">
+import { Vue, Component } from 'nuxt-property-decorator'
+import Fumen from '~/components/Fumen.vue'
 
-export default {
+@Component({
   components: {
-    Logo,
-    VuetifyLogo
+    Fumen
   }
+})
+export default class Index extends Vue {
 }
 </script>
