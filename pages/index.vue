@@ -1,14 +1,47 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="10" lg="10">
-      <div class="text-center">
-        <v-img height="40vh" max-height="480px" width="auto" aspect-ratio="4:3" src="https://placehold.jp/640x480.png" />
-      </div>
-      <div class="mt-4 text-center">
+    <v-col cols="12" sm="8" md="8" lg="8">
+      <!-- トップ キャッチ画像 -->
+      <v-container>
+        <v-row>
+          <v-col sm="12" md="12" lg="8">
+            <div class="text-center">
+              <v-img height="40vh" max-height="480px" width="auto" aspect-ratio="4:3" src="https://placehold.jp/640x480.png" />
+            </div>
+          </v-col>
+          <v-col class="my-auto hidden-md-and-down" sm="12" md="4">
+            <v-card>
+              <v-list class="transparent">
+                <v-list-item class="text-center mx-auto">
+                  <v-text>Sonolus創作譜面ポータル SweetPotato へようこそ!</v-text>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn icon class="mx-auto">
+                    <v-icon>mdi-discord</v-icon>
+                  </v-btn>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn class="secondary mx-auto">
+                    創作譜面の遊び方
+                  </v-btn>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn class="secondary mx-auto">
+                    創作譜面の作り方
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+      <!-- スマホ専用 遊び方ページジャンプ -->
+      <div class="mt-4 hidden-lg-and-up text-center">
         <v-btn large class="secondary">
-          Sonolusの遊び方
+          創作譜面の遊び方
         </v-btn>
       </div>
+      <!-- 新着譜面3件 (Firebaseから取得) -->
       <div class="mt-6 v-heading text-h4">
         新着譜面
       </div>
@@ -22,7 +55,9 @@
             md="6"
             lg="4"
           >
-            <Fumen :level="n*10" />
+            <!-- スマホでも読み込まれてしまうのでできれば負荷軽減すべき -->
+            <FumenLarge class="hidden-md-and-down" :level="n*10" />
+            <Fumen class="hidden-lg-and-up" :level="n*10" />
           </v-col>
         </v-row>
       </v-container>
@@ -31,75 +66,6 @@
           もっと見る
         </v-btn>
       </div>
-      <!--
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-      -->
     </v-col>
   </v-row>
 </template>
@@ -107,10 +73,12 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import Fumen from '~/components/Fumen.vue'
+import FumenLarge from '~/components/FumenLarge.vue'
 
 @Component({
   components: {
-    Fumen
+    Fumen,
+    FumenLarge
   }
 })
 export default class Index extends Vue {
