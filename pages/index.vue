@@ -13,7 +13,7 @@
             <v-card>
               <v-list class="transparent">
                 <v-list-item class="text-center mx-auto">
-                  <v-text>Sonolus創作譜面ポータル SweetPotato へようこそ!</v-text>
+                  Sonolus創作譜面ポータル SweetPotato へようこそ!
                 </v-list-item>
                 <v-list-item>
                   <v-btn icon class="mx-auto">
