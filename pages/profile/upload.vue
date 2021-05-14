@@ -122,16 +122,8 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import { database } from '~/plugins/firebase'
-
-interface Fumen {
-  title: string
-  name: string
-  description: string
-  artists: string
-  author: string
-  rating: number
-  valid: boolean
-}
+import { UploadFiles } from '~/types/upload/files'
+import { Fumen, LEVEL_COVER, LEVEL_BGM, LEVEL_DATA } from '~/types/upload/fumen'
 
 @Component
 export default class Upload extends Vue {
@@ -142,7 +134,9 @@ export default class Upload extends Vue {
       artists: '',
       author: '',
       rating: 25,
-      valid: true
+      cover: { type: LEVEL_COVER, hash: 'hoge', url: 'hoge' },
+      bgm: { type: LEVEL_BGM, hash: 'hoge', url: 'hoge' },
+      data: { type: LEVEL_DATA, hash: 'hoge', url: 'hoge' }
     }
 
     termsOfUses: string = `利用規約
