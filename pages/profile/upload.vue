@@ -22,35 +22,34 @@
             </v-col>
             <v-col cols="12" lg="10">
               <v-text-field
-                v-model="name"
+                v-model="fumen.name"
                 counter="50"
                 label="Name"
                 required
               />
 
               <v-text-field
-                v-model="title"
+                v-model="fumen.title"
                 counter="50"
                 label="Title"
                 required
               />
 
               <v-text-field
-                v-model="artists"
+                v-model="fumen.artists"
                 counter="50"
                 label="Artists"
                 required
               />
 
               <v-text-field
-                v-model="author"
+                v-model="fumen.author"
                 label="Author"
-                value="Domao"
-                readonly
+                required
               />
 
               <v-textarea
-                v-model="description"
+                v-model="fumen.description"
                 label="Description"
                 counter
                 maxlength="120"
@@ -59,7 +58,7 @@
               />
 
               <v-slider
-                v-model="rating"
+                v-model="fumen.rating"
                 label="Difficulty"
                 hint="Im a hint"
                 thumb-label
@@ -74,17 +73,17 @@
             </v-col>
             <v-col cols="12" lg="10">
               <v-file-input
-                accept="image/*"
+                accept="audio/mpeg"
                 prepend-icon="mdi-music"
                 label="Select music (.mp3)"
               />
               <v-file-input
-                accept="image/*"
+                accept="text/plain"
                 prepend-icon="mdi-file-music-outline"
                 label="Select chart (.sus)"
               />
               <v-file-input
-                accept="image/*"
+                accept="image/png"
                 prepend-icon="mdi-file-image"
                 label="Select jacket (.png)"
               />
@@ -109,6 +108,7 @@
               x-large
               color="success"
               class="mr-4"
+              @click="addToFirebase"
             >
               利用規約に同意して投稿する
             </v-btn>
@@ -121,16 +121,30 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
+import { database } from '~/plugins/firebase'
+
+interface Fumen {
+  title: string
+  name: string
+  description: string
+  artists: string
+  author: string
+  rating: number
+  valid: boolean
+}
 
 @Component
 export default class Upload extends Vue {
-    name: string = ''
-    title: string = ''
-    description: string = ''
-    artists: string = ''
-    author: string = 'Domao'
-    rating: number = 25
-    valid: boolean = false
+    fumen: Fumen = {
+      title: '',
+      name: '',
+      description: '',
+      artists: '',
+      author: '',
+      rating: 25,
+      valid: true
+    }
+
     termsOfUses: string = `利用規約
 この利用規約（以下，「本規約」といいます。）は，＿＿＿＿＿（以下，「当社」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。
 
@@ -227,5 +241,15 @@ export default class Upload extends Vue {
 本規約の解釈にあたっては，日本法を準拠法とします。
 本サービスに関して紛争が生じた場合には，当社の本店所在地を管轄する裁判所を専属的合意管轄とします。
 以上`
+
+    addToFirebase () : void {
+      database.ref('fumen').push(
+        this.fumen
+      ).then(function (docRef: any) {
+        console.log('Document written with ID: ', docRef)
+      }).catch(function (error: any) {
+        console.error('Error adding document: ', error)
+      })
+    }
 }
 </script>
