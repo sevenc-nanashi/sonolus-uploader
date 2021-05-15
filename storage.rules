@@ -1,8 +1,32 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if request.auth!=null;
+    function isOwnBucket(userId) {
+      return request.auth.uid != null && userId == request.auth.uid;
+    }
+    match /fumen/bgm/{userId}/{bgmFile} {
+      allow read;
+      // Only allow writing if it's mp3, and smaller than 30MB
+      allow write : if isOwnBucket(userId)
+                  && request.resource.contentType.matches('audio/mpeg')
+                  && request.resource.size < 30 * 1024 * 1024;
+    }
+    match /fumen/cover/{userId}/{coverFile} {
+      allow read;
+      // Only allow writing if it's PNG, and smaller than 2MB
+      allow write : if isOwnBucket(userId)
+                  && (
+                  	request.resource.contentType.matches('image/png')
+                    || request.resource.contentType.matches('image/jpeg')
+                  )
+                  && request.resource.size < 2 * 1024 * 1024;
+    }
+    match /fumen/data/{userId}/{dataFile} {
+      allow read;
+      // Only allow writing if it's sonolus fumen, and smaller than 1MB
+      allow write : if isOwnBucket(userId)
+                  && request.resource.contentType.matches('application/zip')
+                  && request.resource.size < 1 * 1024 * 1024;
     }
   }
 }
