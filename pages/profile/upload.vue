@@ -73,19 +73,25 @@
             </v-col>
             <v-col cols="12" lg="10">
               <v-file-input
-                accept="audio/mpeg"
-                prepend-icon="mdi-music"
-                label="Select music (.mp3)"
-              />
-              <v-file-input
-                accept="text/plain"
-                prepend-icon="mdi-file-music-outline"
-                label="Select chart (.sus)"
-              />
-              <v-file-input
                 accept="image/png"
                 prepend-icon="mdi-file-image"
                 label="Select jacket (.png)"
+                @click:clear="files.cover = null"
+                @change="files.cover = $event"
+              />
+              <v-file-input
+                accept="audio/mpeg"
+                prepend-icon="mdi-music"
+                label="Select music (.mp3)"
+                @click:clear="files.bgm = null"
+                @change="files.bgm = $event"
+              />
+              <v-file-input
+                accept=".sus,text/plain"
+                prepend-icon="mdi-file-music-outline"
+                label="Select chart (.sus)"
+                @click:clear="files.data = null"
+                @change="files.data = $event"
               />
             </v-col>
             <v-col cols="12" lg="10">
@@ -115,13 +121,40 @@
           </v-card-actions>
         </v-card>
       </v-form>
+      <v-overlay :value="uploadProgress != ''">
+        <v-container>
+          <v-row
+            class="fill-height"
+            align-content="center"
+            justify="center"
+          >
+            <v-col
+              class="subtitle-1 text-center"
+              cols="12"
+            >
+              {{ uploadProgress }}
+            </v-col>
+            <v-col cols="6">
+              <v-progress-linear
+                color="deep-purple accent-4"
+                indeterminate
+                rounded
+                height="6"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-overlay>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
+import Jszip from 'jszip'
+import SHA1 from 'crypto-js/sha1'
+import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { database } from '~/plugins/firebase'
+import { database, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
 import { Fumen, LEVEL_COVER, LEVEL_BGM, LEVEL_DATA } from '~/types/upload/fumen'
 
@@ -138,6 +171,14 @@ export default class Upload extends Vue {
       bgm: { type: LEVEL_BGM, hash: 'hoge', url: 'hoge' },
       data: { type: LEVEL_DATA, hash: 'hoge', url: 'hoge' }
     }
+
+    files: UploadFiles = {
+      cover: new File([], ''),
+      bgm: new File([], ''),
+      data: new File([], '')
+    }
+
+    uploadProgress: string = ''
 
     termsOfUses: string = `利用規約
 この利用規約（以下，「本規約」といいます。）は，＿＿＿＿＿（以下，「当社」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。
@@ -236,14 +277,83 @@ export default class Upload extends Vue {
 本サービスに関して紛争が生じた場合には，当社の本店所在地を管轄する裁判所を専属的合意管轄とします。
 以上`
 
-    addToFirebase () : void {
-      database.ref('fumen').push(
-        this.fumen
-      ).then(function (docRef: any) {
-        console.log('Document written with ID: ', docRef)
-      }).catch(function (error: any) {
-        console.error('Error adding document: ', error)
+    uploadFumen () {
+      const resp = database.ref('fumen').push(this.fumen)
+      return resp
+    }
+
+    async compressFumenData () {
+      const gzip = new Jszip()
+      gzip.file(this.files.data.name, this.files.data)
+      const gzippedFumen = await gzip.generateAsync({ type: 'blob' })
+      return gzippedFumen
+    }
+
+    readFileAsArrayBuffer (file: File) {
+      return new Promise<number[]>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = (e: any) => {
+          resolve(e.target.result)
+        }
+        reader.onerror = reject
+        reader.readAsArrayBuffer(file as Blob)
       })
+    }
+
+    uploadToStorage (ref: StorageReference, file: File) {
+      return new Promise<string>((resolve, reject) => {
+        const task = ref.put(file as Blob)
+        task.on('state_changed',
+          snapshot => (console.log(snapshot)),
+          (error) => { reject(error) },
+          () => {
+            this.readFileAsArrayBuffer(file).then(
+              (binary) => {
+                const wordArray = LibTypedArrays.create(binary)
+                const hash = SHA1(wordArray).toString()
+                resolve(hash)
+              }
+            ).catch((e) => { reject(e) })
+          }
+        )
+      })
+    }
+
+    async addToFirebase () : Promise<void> {
+      const fumenRef = storage.ref().child('fumen')
+      this.uploadProgress = '投稿を開始します'
+      try {
+        this.uploadProgress = '譜面カバーを登録しています...'
+        const coverRef = fumenRef.child(`cover/${this.files.cover.name}`)
+        const coverHash = await this.uploadToStorage(coverRef, this.files.cover)
+        this.fumen.cover.hash = coverHash
+        this.fumen.cover.url = await coverRef.getDownloadURL()
+
+        this.uploadProgress = '譜面BGMを登録しています...'
+        const bgmRef = fumenRef.child(`bgm/${this.files.bgm.name}`)
+        const bgmHash = await this.uploadToStorage(bgmRef, this.files.bgm)
+        this.fumen.bgm.hash = bgmHash
+        this.fumen.bgm.url = await bgmRef.getDownloadURL()
+
+        this.uploadProgress = '譜面データを登録しています...'
+        const dataRef = fumenRef.child(`data/${this.files.data.name}`)
+        const dataZip = await this.compressFumenData()
+        const dataHash = await this.uploadToStorage(dataRef, dataZip as File)
+        this.fumen.data.hash = dataHash
+        this.fumen.data.url = await dataRef.getDownloadURL()
+
+        this.uploadProgress = '譜面情報を登録しています...'
+        const resp = await this.uploadFumen()
+        console.log('Document written with ID: ', resp)
+        this.uploadProgress = '投稿完了!'
+      } catch (e) {
+        console.error(e)
+      }
+      this.uploadProgress = ''
+    }
+
+    log (str: string) : void {
+      console.log(str)
     }
 }
 </script>

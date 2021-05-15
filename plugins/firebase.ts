@@ -23,3 +23,6 @@ export const auth = firebase.auth()
 export const google = new firebase.auth.GoogleAuthProvider()
 export const database = firebase.database()
 export const storage = firebase.storage()
+export type StorageReference = firebase.storage.Reference
+export type FirebaseAuth = firebase.auth.Auth
+export type FirebaseUser = firebase.User

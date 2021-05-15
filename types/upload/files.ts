@@ -1,7 +1,7 @@
 interface UploadFiles {
-    cover: File | null
-    bgm: File | null
-    data: File | null
+    cover: File
+    bgm: File
+    data: File
 }
 
 export { UploadFiles }
