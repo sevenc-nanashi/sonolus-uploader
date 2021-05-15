@@ -23,6 +23,7 @@
             <v-col cols="12" lg="10">
               <v-text-field
                 v-model="fumen.name"
+                :rules="rules.name"
                 counter="50"
                 label="Name"
                 required
@@ -30,6 +31,7 @@
 
               <v-text-field
                 v-model="fumen.title"
+                :rules="rules.title"
                 counter="50"
                 label="Title"
                 required
@@ -37,6 +39,7 @@
 
               <v-text-field
                 v-model="fumen.artists"
+                :rules="rules.artists"
                 counter="50"
                 label="Artists"
                 required
@@ -44,12 +47,15 @@
 
               <v-text-field
                 v-model="fumen.author"
+                :rules="rules.author"
+                counter="30"
                 label="Author"
                 required
               />
 
               <v-textarea
                 v-model="fumen.description"
+                :rules="rules.description"
                 label="Description"
                 counter
                 maxlength="120"
@@ -59,6 +65,7 @@
 
               <v-slider
                 v-model="fumen.rating"
+                :rules="rules.rating"
                 label="Difficulty"
                 hint="Im a hint"
                 thumb-label
@@ -76,6 +83,7 @@
                 accept="image/png"
                 prepend-icon="mdi-file-image"
                 label="Select jacket (.png)"
+                :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.cover = null"
                 @change="files.cover = $event"
               />
@@ -83,13 +91,15 @@
                 accept="audio/mpeg"
                 prepend-icon="mdi-music"
                 label="Select music (.mp3)"
+                :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.bgm = null"
                 @change="files.bgm = $event"
               />
               <v-file-input
-                accept=".sus,text/plain"
+                accept=".sus"
                 prepend-icon="mdi-file-music-outline"
                 label="Select chart (.sus)"
+                :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.data = null"
                 @change="files.data = $event"
               />
@@ -154,13 +164,36 @@ import Jszip from 'jszip'
 import SHA1 from 'crypto-js/sha1'
 import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { database, storage, StorageReference } from '~/plugins/firebase'
+import { auth, database, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
-import ToS from '~/assets/texts/ToS.txt'
 import { Fumen, LEVEL_COVER, LEVEL_BGM, LEVEL_DATA } from '~/types/upload/fumen'
+import ToS from '~/assets/texts/ToS.txt'
 
 @Component
 export default class Upload extends Vue {
+    rules : object = {
+      name: [
+        (v: any) => { return !!v || 'Name is required' },
+        (v: any) => (v && v.length <= 50) || 'Name must be less than 50 characters'
+      ],
+      title: [
+        (v: any) => { return !!v || 'Title is required' },
+        (v: any) => (v && v.length <= 50) || 'Title must be less than 50 characters'
+      ],
+      artists: [
+        (v: any) => { return !!v || 'Artists is required' },
+        (v: any) => (v && v.length <= 50) || 'Artists must be less than 50 characters'
+      ],
+      author: [
+        (v: any) => { return !!v || 'Author is required' },
+        (v: any) => (v && v.length <= 30) || 'Author must be less than 30 characters'
+      ],
+      description: [
+        (v: any) => { return !!v || 'Description is required' },
+        (v: any) => (v && v.length <= 120) || 'Description must be less than 120 characters'
+      ]
+    }
+
     fumen: Fumen = {
       title: '',
       name: '',
@@ -183,9 +216,24 @@ export default class Upload extends Vue {
 
     termsOfUses: string = ToS
 
+    mounted () {
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          this.$router.push('/')
+        }
+      })
+    }
+
     uploadFumen () {
       const resp = database.ref('fumen').push(this.fumen)
       return resp
+    }
+
+    goTop () : void {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     }
 
     async compressFumenData () {
@@ -195,7 +243,7 @@ export default class Upload extends Vue {
       return gzippedFumen
     }
 
-    readFileAsArrayBuffer (file: File) {
+    readFileAsArrayBuffer (file: File) : Promise<number[]> {
       return new Promise<number[]>((resolve, reject) => {
         const reader = new FileReader()
         reader.onloadend = (e: any) => {
@@ -206,45 +254,54 @@ export default class Upload extends Vue {
       })
     }
 
-    uploadToStorage (ref: StorageReference, file: File) {
-      return new Promise<string>((resolve, reject) => {
-        const task = ref.put(file as Blob)
-        task.on('state_changed',
-          snapshot => (console.log(snapshot)),
-          (error) => { reject(error) },
-          () => {
-            this.readFileAsArrayBuffer(file).then(
-              (binary) => {
-                const wordArray = LibTypedArrays.create(binary)
-                const hash = SHA1(wordArray).toString()
-                resolve(hash)
-              }
-            ).catch((e) => { reject(e) })
-          }
-        )
-      })
+    async generateSHA1Hash (file: File) : Promise<string> {
+      const binary = await this.readFileAsArrayBuffer(file)
+      const wordArray = LibTypedArrays.create(binary)
+      const hash = SHA1(wordArray).toString()
+      return hash
+    }
+
+    async uploadToStorage (ref: StorageReference, file: File) {
+      try {
+        const task = await ref.put(file as Blob)
+        return task
+      } catch (e: any) {
+        console.log(e)
+        return null
+      }
     }
 
     async addToFirebase () : Promise<void> {
+      const isFormOk = (
+        this.$refs.form as Vue & { validate: () => boolean }
+      ).validate()
+      if (!auth.currentUser || !isFormOk) {
+        this.goTop()
+        return
+      }
       const fumenRef = storage.ref().child('fumen')
+      const uid = auth.currentUser.uid
       this.uploadProgress = '投稿を開始します'
       try {
         this.uploadProgress = '譜面カバーを登録しています...'
-        const coverRef = fumenRef.child(`cover/${this.files.cover.name}`)
-        const coverHash = await this.uploadToStorage(coverRef, this.files.cover)
+        const coverRef = fumenRef.child(`cover/${uid}/${this.files.cover.name}`)
+        const coverHash = await this.generateSHA1Hash(this.files.cover)
+        await this.uploadToStorage(coverRef, this.files.cover)
         this.fumen.cover.hash = coverHash
         this.fumen.cover.url = await coverRef.getDownloadURL()
 
         this.uploadProgress = '譜面BGMを登録しています...'
-        const bgmRef = fumenRef.child(`bgm/${this.files.bgm.name}`)
-        const bgmHash = await this.uploadToStorage(bgmRef, this.files.bgm)
+        const bgmRef = fumenRef.child(`bgm/${uid}/${this.files.bgm.name}`)
+        const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+        await this.uploadToStorage(bgmRef, this.files.bgm)
         this.fumen.bgm.hash = bgmHash
         this.fumen.bgm.url = await bgmRef.getDownloadURL()
 
         this.uploadProgress = '譜面データを登録しています...'
-        const dataRef = fumenRef.child(`data/${this.files.data.name}`)
+        const dataRef = fumenRef.child(`data/${uid}/${this.files.data.name}`)
         const dataZip = await this.compressFumenData()
-        const dataHash = await this.uploadToStorage(dataRef, dataZip as File)
+        const dataHash = await this.generateSHA1Hash(dataZip as File)
+        await this.uploadToStorage(dataRef, dataZip as File)
         this.fumen.data.hash = dataHash
         this.fumen.data.url = await dataRef.getDownloadURL()
 
