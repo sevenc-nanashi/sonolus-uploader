@@ -80,9 +80,9 @@
             </v-col>
             <v-col cols="12" lg="10">
               <v-file-input
-                accept="image/png"
+                accept="image/png,image/jpeg"
                 prepend-icon="mdi-file-image"
-                label="Select jacket (.png)"
+                label="Select jacket (*.png, *.jpg)"
                 :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.cover = null"
                 @change="files.cover = $event"
@@ -90,15 +90,15 @@
               <v-file-input
                 accept="audio/mpeg"
                 prepend-icon="mdi-music"
-                label="Select music (.mp3)"
+                label="Select music (*.mp3)"
                 :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.bgm = null"
                 @change="files.bgm = $event"
               />
               <v-file-input
-                accept=".sus"
+                accept="text/json"
                 prepend-icon="mdi-file-music-outline"
-                label="Select chart (.sus)"
+                label="Select chart (level.json)"
                 :rules="[v => !!v || 'File is mandatory']"
                 @click:clear="files.data = null"
                 @change="files.data = $event"
@@ -155,6 +155,22 @@
           </v-row>
         </v-container>
       </v-overlay>
+      <v-snackbar
+        v-model="uploadSuccess"
+        timeout="3000"
+      >
+        投稿完了!
+        <template #action="{ attrs }">
+          <v-btn
+            color="green"
+            text
+            v-bind="attrs"
+            @click="uploadSuccess = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-col>
   </v-row>
 </template>
@@ -213,7 +229,7 @@ export default class Upload extends Vue {
     }
 
     uploadProgress: string = ''
-
+    uploadSuccess: boolean = false
     termsOfUses: string = ToS
 
     mounted () {
@@ -239,7 +255,10 @@ export default class Upload extends Vue {
     async compressFumenData () {
       const gzip = new Jszip()
       gzip.file(this.files.data.name, this.files.data)
-      const gzippedFumen = await gzip.generateAsync({ type: 'blob' })
+      const gzippedFumen = await gzip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE'
+      })
       return gzippedFumen
     }
 
@@ -284,23 +303,23 @@ export default class Upload extends Vue {
       this.uploadProgress = '投稿を開始します'
       try {
         this.uploadProgress = '譜面カバーを登録しています...'
-        const coverRef = fumenRef.child(`cover/${uid}/${this.files.cover.name}`)
         const coverHash = await this.generateSHA1Hash(this.files.cover)
+        const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
         await this.uploadToStorage(coverRef, this.files.cover)
         this.fumen.cover.hash = coverHash
         this.fumen.cover.url = await coverRef.getDownloadURL()
 
         this.uploadProgress = '譜面BGMを登録しています...'
-        const bgmRef = fumenRef.child(`bgm/${uid}/${this.files.bgm.name}`)
         const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+        const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
         await this.uploadToStorage(bgmRef, this.files.bgm)
         this.fumen.bgm.hash = bgmHash
         this.fumen.bgm.url = await bgmRef.getDownloadURL()
 
         this.uploadProgress = '譜面データを登録しています...'
-        const dataRef = fumenRef.child(`data/${uid}/${this.files.data.name}`)
         const dataZip = await this.compressFumenData()
         const dataHash = await this.generateSHA1Hash(dataZip as File)
+        const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
         await this.uploadToStorage(dataRef, dataZip as File)
         this.fumen.data.hash = dataHash
         this.fumen.data.url = await dataRef.getDownloadURL()
@@ -308,7 +327,10 @@ export default class Upload extends Vue {
         this.uploadProgress = '譜面情報を登録しています...'
         const resp = await this.uploadFumen()
         console.log('Document written with ID: ', resp)
-        this.uploadProgress = '投稿完了!'
+        const resetter = (this.$refs.form as Vue & { reset: () => void })
+        await resetter.reset()
+        this.termsOfUses = ToS
+        this.uploadSuccess = true
       } catch (e) {
         console.error(e)
       }
