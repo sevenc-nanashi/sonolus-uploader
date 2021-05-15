@@ -50,7 +50,10 @@ export default {
   ],
 
   markdownit: {
-    runtime: true // Support `$md()`
+    runtime: true, // Support `$md()`
+    breaks: true, // 改行コードを<br>に変換する
+    html: true, // HTML タグを有効にする
+    linkify: true // URLに似たテキストをリンクに自動変換する
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

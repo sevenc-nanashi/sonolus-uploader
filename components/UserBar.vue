@@ -10,7 +10,8 @@
       譜面投稿
     </v-btn>
     <v-btn
-      class="hidden-md-and-down"
+      to="/profile/account"
+      class="hidden-md-and-down no-hover"
       text
     >
       <img

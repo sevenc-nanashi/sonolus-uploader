@@ -21,12 +21,12 @@
                   </v-btn>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn class="secondary mx-auto">
+                  <v-btn to="/help/play-sonolus-fumen" class="secondary mx-auto">
                     創作譜面の遊び方
                   </v-btn>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn class="secondary mx-auto">
+                  <v-btn to="/help/create-sonolus-fumen" class="secondary mx-auto">
                     創作譜面の作り方
                   </v-btn>
                 </v-list-item>

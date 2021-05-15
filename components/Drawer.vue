@@ -58,7 +58,7 @@ export default class Drawer extends Vue {
     {
       icon: 'mdi-palette',
       title: 'PurplePaletteについて',
-      to: '/help/about-purple-palette'
+      to: '/help/about-purplepalette'
     },
     {
       icon: 'mdi-discord',
