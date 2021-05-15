@@ -3,7 +3,7 @@
 このページでは 投稿された譜面を実際に遊ぶ方法を解説します。
 
 ## iPhone/iPadの方
-<iframe width="560" height="315" src="https://www.youtube.com/embed/qMUdLv69T7Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="350vw" max-width="100%" height="315" src="https://www.youtube.com/embed/qMUdLv69T7Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 <br>
 
 こちらの動画を参考に進めてください。
