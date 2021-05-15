@@ -12,7 +12,12 @@
     >
       <v-icon>mdi-menu</v-icon>
     </v-btn>
-    <v-toolbar-title color="white" v-text="title" />
+    <v-toolbar-title
+      style="cursor: pointer"
+      color="white"
+      @click="$router.push('/')"
+      v-text="title"
+    />
     <v-spacer />
     <GuestBar v-if="!logined" />
     <UserBar v-else :avatar-url="user.photoURL" />

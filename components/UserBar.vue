@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-btn
-      class="hidden-md-and-down secondary"
+      to="/profile/upload"
+      class="hidden-md-and-down secondary no-hover"
     >
       <v-icon>
         mdi-upload
@@ -31,3 +32,9 @@ export default class UserBar extends Vue {
   avatarUrl!: string
 }
 </script>
+
+<style>
+.no-hover::before {
+  opacity: 0 !important;
+}
+</style>

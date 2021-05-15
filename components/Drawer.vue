@@ -11,6 +11,7 @@
         :key="item.title"
         :to="item.to"
         :href="item.href"
+        class="no-hover"
       >
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
@@ -46,18 +47,18 @@ export default class Drawer extends Vue {
   items = [
     {
       icon: 'mdi-information',
-      title: 'Sonolusについて',
-      to: '/'
-    },
-    {
-      icon: 'mdi-palette',
-      title: 'PurplePaletteについて',
-      to: '/'
+      title: '創作譜面の遊び方',
+      to: '/help/play-sonolus-fumen'
     },
     {
       icon: 'mdi-format-list-bulleted',
       title: '創作譜面一覧',
-      to: '/'
+      to: '/fumen/list'
+    },
+    {
+      icon: 'mdi-palette',
+      title: 'PurplePaletteについて',
+      to: '/help/about-purple-palette'
     },
     {
       icon: 'mdi-discord',
@@ -67,3 +68,9 @@ export default class Drawer extends Vue {
   ]
 }
 </script>
+
+<style>
+.no-hover::before {
+  opacity: 0 !important;
+}
+</style>
