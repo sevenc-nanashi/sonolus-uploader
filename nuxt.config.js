@@ -81,6 +81,14 @@ export default {
   build: {
     babel: {
       plugins: [['@babel/plugin-proposal-private-methods', { loose: true }]]
+    },
+    extend (config, _ctx) {
+      config.module.rules.push({
+        enforce: 'pre',
+        test: /\.txt$/,
+        loader: 'raw-loader',
+        exclude: /(node_modules)/
+      })
     }
   }
 }
