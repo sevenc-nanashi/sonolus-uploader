@@ -1,26 +1,22 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="8" lg="6">
+    <v-col cols="12" sm="8" md="8" lg="10">
       <v-form
         ref="form"
         lazy-validation
       >
-        <v-card class="px-3 py-3">
-          <v-row align="center" justify="center">
-            <v-col cols="12" lg="10">
-              <v-card-title class="text-h4">
-                譜面投稿
-              </v-card-title>
-              <v-card-subtitle>
-                あなたの作成した譜面をみんなが遊べるようにしましょう!
-              </v-card-subtitle>
-            </v-col>
-            <v-col cols="12" lg="10">
+        <v-card class="px-3 pb-3 px-2">
+          <v-card-title class="text-h4">
+            譜面投稿
+          </v-card-title>
+          <v-card-subtitle>
+            あなたの作成した譜面をみんなが遊べるようにしましょう!
+          </v-card-subtitle>
+          <v-row justify="center">
+            <v-col cols="12" lg="6">
               <div class="mt-4 title text-h5">
                 譜面情報
               </div>
-            </v-col>
-            <v-col cols="12" lg="10">
               <v-text-field
                 v-model="fumen.name"
                 :rules="rules.name"
@@ -28,7 +24,6 @@
                 label="Name"
                 required
               />
-
               <v-text-field
                 v-model="fumen.title"
                 :rules="rules.title"
@@ -36,7 +31,6 @@
                 label="Title"
                 required
               />
-
               <v-text-field
                 v-model="fumen.artists"
                 :rules="rules.artists"
@@ -44,7 +38,6 @@
                 label="Artists"
                 required
               />
-
               <v-text-field
                 v-model="fumen.author"
                 :rules="rules.author"
@@ -52,7 +45,10 @@
                 label="Author"
                 required
               />
-
+              <v-select
+                :items="genres"
+                label="Genre"
+              />
               <v-textarea
                 v-model="fumen.description"
                 :rules="rules.description"
@@ -62,7 +58,6 @@
                 full-width
                 single-line
               />
-
               <v-slider
                 v-model="fumen.rating"
                 :rules="rules.rating"
@@ -72,23 +67,15 @@
                 max="50"
                 min="1"
               />
-              <v-checkbox
-                v-model="fumen.publish"
-                label="一般公開する(テストプレイ後に選択できます)"
-                disabled
-              />
             </v-col>
-            <v-col cols="12" lg="10">
+            <v-col cols="12" lg="6">
               <div class="mt-4 title text-h5">
                 ファイル選択
               </div>
-            </v-col>
-            <v-col cols="12" lg="10">
               <v-file-input
                 accept="image/png,image/jpeg"
                 prepend-icon="mdi-file-image"
-                label="Select jacket (*.png, *.jpg)"
-                :rules="[v => !!v || 'File is mandatory']"
+                label="Select jacket (*.png, *.jpg) (Optional)"
                 @click:clear="files.cover = null"
                 @change="files.cover = $event"
               />
@@ -108,32 +95,33 @@
                 @click:clear="files.data = null"
                 @change="files.data = $event"
               />
-            </v-col>
-            <v-col cols="12" lg="10">
               <div class="mt-4 title text-h5">
                 利用規約
               </div>
-            </v-col>
-            <v-col cols="12" lg="10">
               <v-textarea
+                class="mx-2"
                 no-resize
                 rows="8"
                 :value="termsOfUses"
                 readonly
               />
+              <v-checkbox
+                v-model="fumen.publish"
+                block
+                label="一般公開する(テストプレイ後に選択できます)"
+                disabled
+              />
             </v-col>
           </v-row>
-          <v-card-actions class="mt-3">
-            <v-btn
-              block
-              x-large
-              color="success"
-              class="mr-4"
-              @click="addToFirebase"
-            >
-              利用規約に同意して投稿する
-            </v-btn>
-          </v-card-actions>
+          <v-btn
+            block
+            x-large
+            color="success"
+            class="mr-4"
+            @click="addToFirebase"
+          >
+            利用規約に同意して投稿する
+          </v-btn>
         </v-card>
       </v-form>
       <v-overlay :value="uploadProgress != ''">
@@ -214,6 +202,13 @@ export default class Upload extends Vue {
         (v: any) => (v && v.length <= 120) || 'Description must be less than 120 characters'
       ]
     }
+
+    genres : Array<string> = [
+      'general',
+      'jpop',
+      'anime',
+      'vocaloid'
+    ]
 
     fumen: Fumen = {
       title: '',
