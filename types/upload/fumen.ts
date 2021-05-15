@@ -16,6 +16,7 @@ interface Fumen {
     artists: string
     author: string
     rating: number
+    publish: boolean
     cover: SonolusResourceLocator
     bgm: SonolusResourceLocator
     data: SonolusResourceLocator

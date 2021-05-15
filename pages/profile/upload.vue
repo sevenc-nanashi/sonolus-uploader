@@ -72,6 +72,11 @@
                 max="50"
                 min="1"
               />
+              <v-checkbox
+                v-model="fumen.publish"
+                label="一般公開する(テストプレイ後に選択できます)"
+                disabled
+              />
             </v-col>
             <v-col cols="12" lg="10">
               <div class="mt-4 title text-h5">
@@ -217,6 +222,7 @@ export default class Upload extends Vue {
       artists: '',
       author: '',
       rating: 25,
+      publish: false,
       cover: { type: LEVEL_COVER, hash: 'hoge', url: 'hoge' },
       bgm: { type: LEVEL_BGM, hash: 'hoge', url: 'hoge' },
       data: { type: LEVEL_DATA, hash: 'hoge', url: 'hoge' }
