@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="8" lg="10">
+    <v-col cols="12" sm="8" md="8" lg="12">
       <v-form
         ref="form"
         lazy-validation
@@ -176,7 +176,7 @@ import { Vue, Component } from 'nuxt-property-decorator'
 import { auth, database, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
 import { Fumen, LEVEL_COVER, LEVEL_BGM, LEVEL_DATA } from '~/types/upload/fumen'
-import ToS from '~/assets/texts/ToS.txt'
+const ToS = require('~/assets/texts/ToS.txt')
 
 @Component
 export default class Upload extends Vue {
