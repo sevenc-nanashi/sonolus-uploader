@@ -30,7 +30,7 @@
     "@nuxtjs/eslint-config-typescript": "^6.0.0",
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/vuetify": "^1.11.3",
-    "@openapitools/openapi-generator-cli": "^2.3.0",
+    "@openapitools/openapi-generator-cli": "^2.3.3",
     "@types/crypto-js": "^4.0.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.26.0",
