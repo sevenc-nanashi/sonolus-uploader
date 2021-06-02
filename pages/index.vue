@@ -6,7 +6,7 @@
         <v-row>
           <v-col sm="12" md="12" lg="8">
             <div class="text-center">
-              <v-img height="40vh" max-height="480px" width="auto" aspect-ratio="4:3" src="https://placehold.jp/640x480.png" />
+              <v-img height="40vh" max-height="480px" width="auto" aspect-ratio="4:3" src="sweet-potato-logo3.png" />
             </div>
           </v-col>
           <v-col class="my-auto hidden-md-and-down" sm="12" md="4">
