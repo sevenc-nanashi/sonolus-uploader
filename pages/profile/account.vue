@@ -32,6 +32,11 @@
           </v-btn>
         </v-card-title>
         <v-card-title>
+          <v-btn @click="getJwtToken" xl block color="info">
+            Firebase AuthorizationのJWTトークンを作る(デバッグ)
+          </v-btn>
+        </v-card-title>
+        <v-card-title>
           <v-btn xl block color="warning" @click="logout">
             ログアウトする
           </v-btn>
@@ -70,6 +75,14 @@ export default class Account extends Vue {
         this.$router.push('/')
       }
     })
+  }
+
+  async getJwtToken () {
+    const token = await auth.currentUser?.getIdToken(true)
+    if (token) {
+      alert('トークン作成成功(consoleをみてね)')
+      console.log(token)
+    }
   }
 
   logout () {
