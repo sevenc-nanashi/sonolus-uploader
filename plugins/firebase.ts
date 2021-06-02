@@ -19,10 +19,17 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig)
 }
 
-export const auth = firebase.auth()
+const auth = firebase.auth()
+const database = firebase.database()
+const storage = firebase.storage()
+
+if (process.env.NODE_ENV !== 'production') {
+  auth.useEmulator('http://localhost:9099/')
+  database.useEmulator('localhost', 9000)
+}
+
+export { auth, database, storage }
 export const google = new firebase.auth.GoogleAuthProvider()
-export const database = firebase.database()
-export const storage = firebase.storage()
 export type StorageReference = firebase.storage.Reference
 export type FirebaseAuth = firebase.auth.Auth
 export type FirebaseUser = firebase.User
