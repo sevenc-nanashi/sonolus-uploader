@@ -46,14 +46,19 @@ export default class Drawer extends Vue {
 
   items = [
     {
+      icon: 'mdi-format-list-bulleted',
+      title: '創作譜面一覧',
+      to: '/fumen/list'
+    },
+    {
       icon: 'mdi-information',
       title: '創作譜面の遊び方',
       to: '/help/play-sonolus-fumen'
     },
     {
-      icon: 'mdi-format-list-bulleted',
-      title: '創作譜面一覧',
-      to: '/fumen/list'
+      icon: 'mdi-information',
+      title: '創作譜面の作り方',
+      to: '/help/create-sonolus-fumen'
     },
     {
       icon: 'mdi-palette',
