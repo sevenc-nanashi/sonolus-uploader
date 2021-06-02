@@ -173,7 +173,7 @@ import Jszip from 'jszip'
 import SHA1 from 'crypto-js/sha1'
 import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { auth, database, storage, StorageReference } from '~/plugins/firebase'
+import { auth, firestore, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
 import { Fumen, LEVEL_COVER, LEVEL_BGM, LEVEL_DATA } from '~/types/upload/fumen'
 const ToS = require('~/assets/texts/ToS.txt')
@@ -242,7 +242,7 @@ export default class Upload extends Vue {
     }
 
     uploadFumen () {
-      const resp = database.ref('fumen').push(this.fumen)
+      const resp = firestore.collection('fumen').add(this.fumen)
       return resp
     }
 
@@ -291,6 +291,13 @@ export default class Upload extends Vue {
       }
     }
 
+    async resetForm () : Promise<void> {
+      const resetter = (this.$refs.form as Vue & { reset: () => void })
+      await resetter.reset()
+      this.termsOfUses = ToS
+      this.uploadSuccess = true
+    }
+
     async addToFirebase () : Promise<void> {
       const isFormOk = (
         this.$refs.form as Vue & { validate: () => boolean }
@@ -299,41 +306,45 @@ export default class Upload extends Vue {
         this.goTop()
         return
       }
-      const fumenRef = storage.ref().child('fumen')
-      const uid = auth.currentUser.uid
-      this.uploadProgress = '投稿を開始します'
-      try {
-        this.uploadProgress = '譜面カバーを登録しています...'
-        const coverHash = await this.generateSHA1Hash(this.files.cover)
-        const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
-        await this.uploadToStorage(coverRef, this.files.cover)
-        this.fumen.cover.hash = coverHash
-        this.fumen.cover.url = await coverRef.getDownloadURL()
+      // 開発環境かどうかで処理を分岐
+      if (process.env.NODE_ENV === 'production') {
+        const fumenRef = storage.ref().child('fumen')
+        const uid = auth.currentUser.uid
+        this.uploadProgress = '投稿を開始します'
+        try {
+          this.uploadProgress = '譜面カバーを登録しています...'
+          const coverHash = await this.generateSHA1Hash(this.files.cover)
+          const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
+          await this.uploadToStorage(coverRef, this.files.cover)
+          this.fumen.cover.hash = coverHash
+          this.fumen.cover.url = await coverRef.getDownloadURL()
 
-        this.uploadProgress = '譜面BGMを登録しています...'
-        const bgmHash = await this.generateSHA1Hash(this.files.bgm)
-        const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
-        await this.uploadToStorage(bgmRef, this.files.bgm)
-        this.fumen.bgm.hash = bgmHash
-        this.fumen.bgm.url = await bgmRef.getDownloadURL()
+          this.uploadProgress = '譜面BGMを登録しています...'
+          const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+          const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
+          await this.uploadToStorage(bgmRef, this.files.bgm)
+          this.fumen.bgm.hash = bgmHash
+          this.fumen.bgm.url = await bgmRef.getDownloadURL()
 
-        this.uploadProgress = '譜面データを登録しています...'
-        const dataZip = await this.compressFumenData()
-        const dataHash = await this.generateSHA1Hash(dataZip as File)
-        const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-        await this.uploadToStorage(dataRef, dataZip as File)
-        this.fumen.data.hash = dataHash
-        this.fumen.data.url = await dataRef.getDownloadURL()
-
+          this.uploadProgress = '譜面データを登録しています...'
+          const dataZip = await this.compressFumenData()
+          const dataHash = await this.generateSHA1Hash(dataZip as File)
+          const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
+          await this.uploadToStorage(dataRef, dataZip as File)
+          this.fumen.data.hash = dataHash
+          this.fumen.data.url = await dataRef.getDownloadURL()
+          this.uploadProgress = '譜面情報を登録しています...'
+          const resp = await this.uploadFumen()
+          console.log('Document written with ID: ', resp)
+          this.resetForm()
+        } catch (e) {
+          console.error(e)
+        }
+      // Storageのエミュレータが無いので開発環境ではファイル検証を行えない
+      } else {
         this.uploadProgress = '譜面情報を登録しています...'
-        const resp = await this.uploadFumen()
-        console.log('Document written with ID: ', resp)
-        const resetter = (this.$refs.form as Vue & { reset: () => void })
-        await resetter.reset()
-        this.termsOfUses = ToS
-        this.uploadSuccess = true
-      } catch (e) {
-        console.error(e)
+        await this.uploadFumen()
+        this.resetForm()
       }
       this.uploadProgress = ''
     }
