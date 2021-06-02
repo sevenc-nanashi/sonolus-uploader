@@ -8,7 +8,7 @@
       :open-drawer.sync="drawer"
       :right-sided.sync="right"
     />
-    <v-main class="has-yellow">
+    <v-main class="has-blue-bg">
       <v-container>
         <nuxt />
       </v-container>
@@ -37,21 +37,7 @@ export default class Default extends Vue {
 </script>
 
 <style>
-  .theme--light.v-application {
-    color: #FFF ! important;
-  }
-  .has-yellow {
-    background-color: #ffff99;
-  }
-  .has-yellow::before{
-    /* 透過した黒を上から重ねるイメージ */
-    background-color: rgba(0,0,0,0.38);
-    /* 自由に位置指定 */
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    content: ' ';
+  .has-blue-bg {
+    background-color: #f9fcff;
   }
 </style>
