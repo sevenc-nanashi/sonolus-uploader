@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn
-      to="/profile/upload"
+      to="/profile/fumen/upload"
       class="hidden-md-and-down secondary no-hover"
     >
       <v-icon>
