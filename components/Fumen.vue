@@ -20,19 +20,19 @@
           size="100"
           tile
         >
-          <v-img :src="jacket" />
+          <v-img :src="fumen.cover.url" />
         </v-avatar>
       </v-badge>
       <div>
         <v-card-title
           class="display-5"
-          v-text="title"
+          v-text="fumen.title"
         />
         <v-card-subtitle
           class="display-6"
-          v-text="artist"
+          v-text="fumen.artist"
         />
-        <v-card-subtitle class="display-6" v-text="author" />
+        <v-card-subtitle class="display-6" v-text="fumen.author" />
       </div>
     </div>
   </v-card>
@@ -40,28 +40,16 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
+import { Fumen as FumenType } from '@/types/upload/fumen'
 
 @Component
 export default class Fumen extends Vue {
-  @Prop({ type: String, default: 'Daydream café' })
-  title!: string
-
-  @Prop({ type: String, default: 'Petit Rabbit\'s' })
-  artist!: string
-
-  @Prop({ type: String, default: 'Omado' })
-  author!: string
-
-  @Prop({ type: Number, default: 8 })
-  level!: number
-
-  @Prop({ type: String, default: 'https://images-na.ssl-images-amazon.com/images/I/61GMYHzS6DL._AC_SX466_.jpg' })
-  jacket!: string
+  @Prop({ type: Object }) fumen! : FumenType
 
   get levelColor () {
-    if (this.level <= 10) {
+    if (this.fumen.rating <= 10) {
       return 'blue'
-    } else if (this.level <= 20) {
+    } else if (this.fumen.rating <= 20) {
       return 'yellow'
     } else {
       return 'red'
@@ -69,7 +57,7 @@ export default class Fumen extends Vue {
   }
 
   get levelTextColor () {
-    if (this.level > 10 && this.level <= 20) {
+    if (this.fumen.rating > 10 && this.fumen.rating <= 20) {
       return 'black--text'
     } else {
       return 'white--text'
@@ -77,7 +65,7 @@ export default class Fumen extends Vue {
   }
 
   get levelText () {
-    return 'Lv' + this.level
+    return 'Lv' + this.fumen.rating
   }
 }
 </script>
