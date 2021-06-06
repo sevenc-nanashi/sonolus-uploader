@@ -48,30 +48,35 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="n in 3"
-            :key="n"
+            v-for="fumen in fumens"
+            :key="fumen.name"
             cols="12"
             sm="12"
             md="6"
             lg="4"
           >
             <!-- スマホでも読み込まれてしまうのでできれば負荷軽減すべき -->
-            <FumenLarge class="hidden-md-and-down" :level="n*10" />
-            <Fumen class="hidden-lg-and-up" :level="n*10" />
+            <FumenLarge class="hidden-md-and-down" :fumen="fumen" />
+            <Fumen class="hidden-lg-and-up" :fumen="fumen" />
           </v-col>
         </v-row>
       </v-container>
       <div class="mt-4 text-center">
-        <v-btn x-large class="primary">
-          もっと見る
-        </v-btn>
+        <nuxt-link to="fumen/list">
+          <v-btn x-large class="primary">
+            もっと見る
+          </v-btn>
+        </nuxt-link>
       </div>
     </v-col>
   </v-row>
 </template>
 
 <script lang="ts">
+import { Fumen as FumenType } from '@/types/upload/fumen'
+import { SORT_CREATED_DATE, GENRE_ALL, DIFFICULTY_ALL } from '@/types/fumenReader'
 import { Vue, Component } from 'nuxt-property-decorator'
+import { getLevelList } from '@/utils/fumenReader'
 import Fumen from '~/components/Fumen.vue'
 import FumenLarge from '~/components/FumenLarge.vue'
 
@@ -82,5 +87,11 @@ import FumenLarge from '~/components/FumenLarge.vue'
   }
 })
 export default class Index extends Vue {
+  fumens: FumenType[] = []
+
+  async created (): Promise<void> {
+    const levels = await getLevelList('', 1, SORT_CREATED_DATE, GENRE_ALL, DIFFICULTY_ALL)
+    this.fumens = levels.slice(0, 3)
+  }
 }
 </script>
