@@ -20,6 +20,48 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="openTestChange"
+      persistent
+      max-width="600px"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">テストサーバー設定</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  label="テストコード"
+                  type="text"
+                  required
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+          <small>*ここで設定したコードがテストプレイ用のアドレスに使われます</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="openTestChange = false"
+          >
+            保存しないで閉じる
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="openTestChange = false"
+          >
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-col cols="12" sm="12" md="8" lg="6">
       <v-card class="px-3 py-3" height="82vh">
         <v-card-title>アカウント情報</v-card-title>
@@ -47,7 +89,7 @@
           https://sweetpotato.sonolus.jp/test/kfcn
         </v-card-text>
         <v-card-title>
-          <v-btn xl block color="info">
+          <v-btn xl block color="info" @click="openTestChange = true">
             テストプレイサーバーのアドレスを変更する
           </v-btn>
         </v-card-title>
@@ -103,6 +145,7 @@ export default class Account extends Vue {
   page: number = 1
   pageCount: number = 1
   openLoading: boolean = true
+  openTestChange: boolean = false
 
   mounted () {
     auth.onAuthStateChanged((user) => {
