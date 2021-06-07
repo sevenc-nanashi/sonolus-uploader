@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots" : ["@types"],
+    "typeRoots" : ["@types", "./types"],
     "target": "ES2018",
     "module": "ESNext",
     "moduleResolution": "Node",
