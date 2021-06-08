@@ -1,7 +1,6 @@
 import { LevelsApi, UsersApi } from '@/potato'
 
-// eslint-disable-next-line
-export default ({}, inject: any) => {
-  inject('levelsApi', new LevelsApi())
-  inject('usersApi', new UsersApi())
+export default ({ $config }: { $config: any }, inject: any) => {
+  inject('levelsApi', new LevelsApi(undefined, $config.API_ENDPOINT))
+  inject('usersApi', new UsersApi(undefined, $config.API_ENDPOINT))
 }

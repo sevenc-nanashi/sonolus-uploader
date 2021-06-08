@@ -87,6 +87,10 @@ export default {
     }
   },
 
+  publicRuntimeConfig: {
+    API_ENDPOINT: process.env.API_ENDPOINT
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     babel: {
