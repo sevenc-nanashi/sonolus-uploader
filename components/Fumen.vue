@@ -34,6 +34,11 @@
         />
         <v-card-subtitle class="display-6" v-text="fumen.author" />
       </div>
+      <v-row v-if="!fumen.public" align="center" justify="end">
+        <v-card-subtitle class="text-h5 is-centered">
+          テスト中
+        </v-card-subtitle>
+      </v-row>
     </div>
   </v-card>
 </template>
