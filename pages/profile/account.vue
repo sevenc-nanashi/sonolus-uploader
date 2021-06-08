@@ -133,15 +133,15 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
+import { Level } from '@/potato'
 import { auth } from '~/plugins/firebase'
-import { getUserLevelList } from '~/utils/userReader'
-import { Fumen } from '~/types/upload/fumen'
+import { getUserLevelList } from '~/utils/fumenReader'
 
 @Component
 export default class Account extends Vue {
   userName: string | null = 'aaa'
   userPhoto: string | null = ''
-  fumens: Fumen[] = []
+  fumens: Level[] = []
   page: number = 1
   pageCount: number = 1
   openLoading: boolean = true
@@ -152,8 +152,8 @@ export default class Account extends Vue {
       if (user) {
         this.userName = user.displayName
         this.userPhoto = user.photoURL
-        getUserLevelList(user.uid, 1).then((response) => {
-          this.fumens = response.levels
+        getUserLevelList(this.$usersApi, user.uid, 1, undefined, undefined, undefined, undefined, undefined).then((response) => {
+          this.fumens = response.items
           this.pageCount = response.pageCount
           this.openLoading = false
         })
@@ -181,8 +181,8 @@ export default class Account extends Vue {
     const uid = auth.currentUser?.uid
     if (uid) {
       this.openLoading = true
-      const resp = await getUserLevelList(uid, this.page)
-      this.fumens = resp.levels
+      const resp = await getUserLevelList(this.$usersApi, uid, this.page, undefined, undefined, undefined, undefined, undefined)
+      this.fumens = resp.items
       this.pageCount = resp.pageCount
       this.openLoading = false
     }
