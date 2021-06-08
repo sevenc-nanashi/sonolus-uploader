@@ -18,40 +18,40 @@
                 譜面情報
               </div>
               <v-text-field
-                v-model="fumen.name"
+                v-model="level.name"
                 :rules="rules.name"
                 counter="50"
                 label="Name"
                 required
               />
               <v-text-field
-                v-model="fumen.title"
+                v-model="level.title"
                 :rules="rules.title"
                 counter="50"
                 label="Title"
                 required
               />
               <v-text-field
-                v-model="fumen.artists"
+                v-model="level.artists"
                 :rules="rules.artists"
                 counter="50"
                 label="Artists"
                 required
               />
               <v-text-field
-                v-model="fumen.author"
+                v-model="level.author"
                 :rules="rules.author"
                 counter="30"
                 label="Author"
                 required
               />
               <v-select
-                v-model="fumen.genre"
+                v-model="level.genre"
                 :items="genres"
                 label="Genre"
               />
               <v-textarea
-                v-model="fumen.description"
+                v-model="level.description"
                 :rules="rules.description"
                 label="Description"
                 counter
@@ -60,7 +60,7 @@
                 single-line
               />
               <v-slider
-                v-model="fumen.rating"
+                v-model="level.rating"
                 :rules="rules.rating"
                 label="Difficulty"
                 hint="Im a hint"
@@ -107,7 +107,7 @@
                 readonly
               />
               <v-checkbox
-                v-model="fumen.publish"
+                v-model="level._public"
                 block
                 label="一般公開する(テストプレイ後に選択できます)"
                 :disabled="!isUpdateForm"
@@ -173,17 +173,16 @@
 import Jszip from 'jszip'
 import SHA1 from 'crypto-js/sha1'
 import LibTypedArrays from 'crypto-js/lib-typedarrays'
-import { Vue, Component, Prop, PropSync } from 'nuxt-property-decorator'
-import { auth, firestore, storage, StorageReference } from '~/plugins/firebase'
+import { Vue, Component, PropSync } from 'nuxt-property-decorator'
+import { Level, LevelGenreEnum } from '@/potato'
+import { auth, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
-import { Fumen as FumenType } from '~/types/upload/fumen'
-import { FilterGenreKey, GENRE_ALL, GENRE_GENERAL, GENRE_JPOP, GENRE_ANIME, GENRE_VOCALOID } from '~/types/fumenReader'
 const ToS = require('~/assets/texts/ToS.txt')
 
 @Component
-export default class Upload extends Vue {
-  @Prop({ type: Object }) fumen! : FumenType
+export default class FormFumen extends Vue {
   @PropSync('isUpdateForm', { type: Boolean, default: false }) isUpdate!: boolean
+  @PropSync('levelProp', { type: Object }) level! : Level
 
   rules : object = {
     name: [
@@ -208,23 +207,30 @@ export default class Upload extends Vue {
     ]
   }
 
+  genres : Array<LevelGenreEnum> = [
+    LevelGenreEnum.General,
+    LevelGenreEnum.Jpop,
+    LevelGenreEnum.Anime,
+    LevelGenreEnum.Vocaloid
+  ]
+
   files: UploadFiles = {
     cover: new File([], ''),
     bgm: new File([], ''),
     data: new File([], '')
   }
 
-  genres : FilterGenreKey[] = [
-    GENRE_ALL,
-    GENRE_GENERAL,
-    GENRE_JPOP,
-    GENRE_ANIME,
-    GENRE_VOCALOID
-  ]
-
   uploadProgress: string = ''
   uploadSuccess: boolean = false
   termsOfUses: string = ToS
+
+  mounted () {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        this.$router.push('/')
+      }
+    })
+  }
 
   get formTitle () {
     return !this.isUpdate ? '譜面投稿' : '譜面編集'
@@ -234,9 +240,13 @@ export default class Upload extends Vue {
     return !this.isUpdate ? '作成した譜面をみんなが遊べるようにしましょう!' : '作成した譜面をもっと良くしましょう!'
   }
 
-  uploadFumen () {
-    const resp = firestore.collection('levels').doc(this.fumen.name).set(this.fumen)
-    return resp
+  async uploadFumen () {
+    if (this.level !== undefined) {
+      if (this.level.name) {
+        const resp = await this.$levelsApi.addLevel(this.level.name, this.level)
+        return resp
+      }
+    }
   }
 
   goTop () : void {
@@ -304,33 +314,39 @@ export default class Upload extends Vue {
       const fumenRef = storage.ref().child('fumen')
       const uid = auth.currentUser.uid
       this.uploadProgress = '投稿を開始します'
-      try {
-        this.uploadProgress = '譜面カバーを登録しています...'
-        const coverHash = await this.generateSHA1Hash(this.files.cover)
-        const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
-        await this.uploadToStorage(coverRef, this.files.cover)
-        this.fumen.cover.hash = coverHash
-        this.fumen.cover.url = await coverRef.getDownloadURL()
-
-        this.uploadProgress = '譜面BGMを登録しています...'
-        const bgmHash = await this.generateSHA1Hash(this.files.bgm)
-        const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
-        await this.uploadToStorage(bgmRef, this.files.bgm)
-        this.fumen.bgm.hash = bgmHash
-        this.fumen.bgm.url = await bgmRef.getDownloadURL()
-
-        this.uploadProgress = '譜面データを登録しています...'
-        const dataZip = await this.compressFumenData()
-        const dataHash = await this.generateSHA1Hash(dataZip as File)
-        const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-        await this.uploadToStorage(dataRef, dataZip as File)
-        this.fumen.data.hash = dataHash
-        this.fumen.data.url = await dataRef.getDownloadURL()
-        this.uploadProgress = '譜面情報を登録しています...'
-        await this.uploadFumen()
-        this.resetForm()
-      } catch (e) {
-        console.error(e)
+      if (this.level !== undefined) {
+        try {
+          this.uploadProgress = '譜面カバーを登録しています...'
+          const coverHash = await this.generateSHA1Hash(this.files.cover)
+          const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
+          await this.uploadToStorage(coverRef, this.files.cover)
+          if (this.level.cover !== undefined) {
+            this.level.cover.hash = coverHash
+            this.level.cover.url = await coverRef.getDownloadURL()
+          }
+          this.uploadProgress = '譜面BGMを登録しています...'
+          const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+          const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
+          await this.uploadToStorage(bgmRef, this.files.bgm)
+          if (this.level.bgm !== undefined) {
+            this.level.bgm.hash = bgmHash
+            this.level.bgm.url = await bgmRef.getDownloadURL()
+          }
+          this.uploadProgress = '譜面データを登録しています...'
+          const dataZip = await this.compressFumenData()
+          const dataHash = await this.generateSHA1Hash(dataZip as File)
+          const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
+          await this.uploadToStorage(dataRef, dataZip as File)
+          if (this.level.data !== undefined) {
+            this.level.data.hash = dataHash
+            this.level.data.url = await dataRef.getDownloadURL()
+          }
+          this.uploadProgress = '譜面情報を登録しています...'
+          await this.uploadFumen()
+          this.resetForm()
+        } catch (e) {
+          console.error(e)
+        }
       }
     // Storageのエミュレータが無いので開発環境ではファイル検証を行えない
     } else {
