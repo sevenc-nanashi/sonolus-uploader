@@ -155,7 +155,6 @@ export default class FumenList extends Vue {
 
   @Watch('sort')
   changeSort () {
-    console.log(this.sort.value)
     switch (this.sort.value) {
     case 'date-desc':
       this.sortParam = SORT_CREATED_DATE
