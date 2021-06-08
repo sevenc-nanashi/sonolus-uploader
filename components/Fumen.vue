@@ -40,32 +40,39 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
-import { Fumen as FumenType } from '@/types/upload/fumen'
+import { Level } from '@/potato'
 
 @Component
 export default class Fumen extends Vue {
-  @Prop({ type: Object }) fumen! : FumenType
+  @Prop({ type: Object, required: true }) level : Level = {}
 
   get levelColor () {
-    if (this.fumen.rating <= 10) {
-      return 'blue'
-    } else if (this.fumen.rating <= 20) {
-      return 'yellow'
-    } else {
-      return 'red'
+    if (this.level.rating) {
+      if (this.level.rating <= 10) {
+        return 'blue'
+      } else if (this.level.rating <= 20) {
+        return 'yellow'
+      } else {
+        return 'red'
+      }
     }
+    return 'yellow'
   }
 
   get levelTextColor () {
-    if (this.fumen.rating > 10 && this.fumen.rating <= 20) {
-      return 'black--text'
+    if (this.level.rating) {
+      if (this.level.rating > 10 && this.level.rating <= 20) {
+        return 'black--text'
+      } else {
+        return 'white--text'
+      }
     } else {
       return 'white--text'
     }
   }
 
   get levelText () {
-    return 'Lv' + this.fumen.rating
+    return this.level.rating ? 'Lv' + this.level.rating : 'Lv0'
   }
 }
 </script>
