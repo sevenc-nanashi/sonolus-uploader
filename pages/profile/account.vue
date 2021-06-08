@@ -147,16 +147,31 @@ export default class Account extends Vue {
   openLoading: boolean = true
   openTestChange: boolean = false
 
+  async resetUserLevelList () {
+    const uid = auth.currentUser?.uid
+    if (uid) {
+      const resp = await getUserLevelList(
+        this.$usersApi,
+        uid,
+        this.page,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      )
+      this.levels = resp.items
+      this.pageCount = resp.pageCount
+      this.openLoading = false
+    }
+  }
+
   mounted () {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.userName = user.displayName
         this.userPhoto = user.photoURL
-        getUserLevelList(this.$usersApi, user.uid, 1, undefined, undefined, undefined, undefined, undefined).then((response) => {
-          this.fumens = response.items
-          this.pageCount = response.pageCount
-          this.openLoading = false
-        })
+        this.resetUserLevelList()
       } else {
         this.$router.push('/')
       }
@@ -177,15 +192,8 @@ export default class Account extends Vue {
   }
 
   @Watch('page')
-  async onPageChange () {
-    const uid = auth.currentUser?.uid
-    if (uid) {
-      this.openLoading = true
-      const resp = await getUserLevelList(this.$usersApi, uid, this.page, undefined, undefined, undefined, undefined, undefined)
-      this.fumens = resp.items
-      this.pageCount = resp.pageCount
-      this.openLoading = false
-    }
+  onPageChange () {
+    this.resetUserLevelList()
   }
 }
 </script>
