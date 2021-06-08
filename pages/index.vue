@@ -73,10 +73,9 @@
 </template>
 
 <script lang="ts">
-import { Fumen as FumenType } from '@/types/upload/fumen'
-import { SORT_CREATED_DATE, ORDER_DESC, GENRE_ALL, DIFFICULTY_ALL } from '@/types/fumenReader'
+import { Level } from '@/potato'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { getLevelList } from '@/utils/fumenReader'
+import { getLevelList } from '@/utils/FumenReader'
 import Fumen from '~/components/Fumen.vue'
 import FumenLarge from '~/components/FumenLarge.vue'
 
@@ -87,11 +86,11 @@ import FumenLarge from '~/components/FumenLarge.vue'
   }
 })
 export default class Index extends Vue {
-  fumens: FumenType[] = []
+  fumens: Level[] = []
 
   async created (): Promise<void> {
-    const resp = await getLevelList('', 1, SORT_CREATED_DATE, ORDER_DESC, GENRE_ALL, DIFFICULTY_ALL)
-    this.fumens = resp.levels.slice(0, 3)
+    const levels = await getLevelList(this.$levelsApi, 1, undefined, undefined, undefined, undefined, undefined)
+    this.fumens = levels.items.slice(0, 3)
   }
 }
 </script>
