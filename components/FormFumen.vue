@@ -175,9 +175,17 @@ import SHA1 from 'crypto-js/sha1'
 import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
 import { Level, LevelGenreEnum } from '@/potato'
+import { getJwtToken } from '@/utils/token'
 import { auth, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
 const ToS = require('~/assets/texts/ToS.txt')
+
+interface RequestOptions {
+  baseURL: string,
+  headers: {
+    Authorization: string
+  }
+}
 
 @Component
 export default class FormFumen extends Vue {
@@ -224,6 +232,13 @@ export default class FormFumen extends Vue {
   uploadSuccess: boolean = false
   termsOfUses: string = ToS
 
+  requestOptions : RequestOptions = {
+    baseURL: this.$config.API_ENDPOINT,
+    headers: {
+      Authorization: ''
+    }
+  }
+
   mounted () {
     auth.onAuthStateChanged((user) => {
       if (!user) {
@@ -243,7 +258,24 @@ export default class FormFumen extends Vue {
   async uploadFumen () {
     if (this.level !== undefined) {
       if (this.level.name) {
-        const resp = await this.$levelsApi.addLevel(this.level.name, this.level)
+        const token = await getJwtToken()
+        if (token) {
+          this.requestOptions.headers.Authorization = `Bearer ${token}`
+        }
+        const resp = await this.$levelsApi.addLevel(this.level.name, this.level, this.requestOptions)
+        return resp
+      }
+    }
+  }
+
+  async editFumen () {
+    if (this.level !== undefined) {
+      if (this.level.name) {
+        const token = await getJwtToken()
+        if (token) {
+          this.requestOptions.headers.Authorization = `Bearer ${token}`
+        }
+        const resp = await this.$levelsApi.editLevel(this.level.name, this.level, this.requestOptions)
         return resp
       }
     }
@@ -342,7 +374,11 @@ export default class FormFumen extends Vue {
             this.level.data.url = await dataRef.getDownloadURL()
           }
           this.uploadProgress = '譜面情報を登録しています...'
-          await this.uploadFumen()
+          if (!this.isUpdate) {
+            await this.uploadFumen()
+          } else {
+            await this.editFumen()
+          }
           this.resetForm()
         } catch (e) {
           console.error(e)
