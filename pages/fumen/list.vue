@@ -52,14 +52,14 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="fumen in fumens"
-            :key="fumen.name"
+            v-for="level in levels"
+            :key="level.name"
             cols="12"
             sm="6"
             md="6"
             lg="6"
           >
-            <Fumen :fumen="fumen" />
+            <Fumen :level="level" />
           </v-col>
         </v-row>
       </v-container>
@@ -77,15 +77,15 @@
 </template>
 
 <script lang="ts">
-import { Fumen as FumenType } from '@/types/upload/fumen'
+import { Vue, Component, Watch } from 'nuxt-property-decorator'
+import { Level } from '@/potato'
+import { getLevelList } from '@/utils/fumenReader'
 import {
   SortOrder, ORDER_DESC, ORDER_ASC,
   SortKey, SORT_CREATED_DATE, SORT_DIFFICULTY, SORT_NAME,
   FilterGenreKey, GENRE_ALL, GENRE_GENERAL, GENRE_JPOP, GENRE_ANIME, GENRE_VOCALOID,
   FilterDifficultyKey, DIFFICULTY_ALL, DIFFICULTY_EASY, DIFFICULTY_NORMAL, DIFFICULTY_HARD
-} from '@/types/fumenReader'
-import { Vue, Component, Watch } from 'nuxt-property-decorator'
-import { getLevelList } from '@/utils/fumenReader'
+} from '~/types/search'
 import Fumen from '~/components/Fumen.vue'
 
 interface Select {
@@ -99,7 +99,7 @@ interface Select {
   }
 })
 export default class FumenList extends Vue {
-  fumens: FumenType[] = []
+  levels: Level[] = []
   keyword: string = ''
   page: number = 1
   pageCount: number = 1
@@ -137,13 +137,14 @@ export default class FumenList extends Vue {
 
   async resetLevelList () {
     const resp = await getLevelList(
-      this.keyword,
+      this.$levelsApi,
       this.page,
+      this.keyword,
       this.sortParam, this.sortOrderParam,
       this.genreParam,
       this.difficultyParam
     )
-    this.fumens = resp.levels
+    this.levels = resp.items
     this.pageCount = resp.pageCount
   }
 
