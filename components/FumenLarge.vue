@@ -1,19 +1,19 @@
 <template>
   <v-card>
     <v-img
-      :src="fumen.cover.url"
+      :src="level.cover.url"
       height="200px"
     />
     <v-card-title>
-      {{ fumen.title }}
+      {{ level.title }}
     </v-card-title>
 
     <v-card-subtitle>
-      {{ fumen.artist }}
+      {{ level.artist }}
     </v-card-subtitle>
 
     <v-card-text class="text--primary">
-      {{ fumen.author }}
+      {{ level.author }}
     </v-card-text>
 
     <v-row
@@ -31,10 +31,10 @@ import { Level } from '@/potato'
 
 @Component
 export default class FumenLarge extends Vue {
-  @Prop({ type: Object, required: true }) level : Level = {}
+  @Prop({ type: Object, required: true }) level? : Level
 
   get levelColor () {
-    if (this.level.rating) {
+    if (this.level?.rating) {
       if (this.level.rating <= 10) {
         return 'blue'
       } else if (this.level.rating <= 20) {
@@ -47,7 +47,7 @@ export default class FumenLarge extends Vue {
   }
 
   get levelTextColor () {
-    if (this.level.rating) {
+    if (this.level?.rating) {
       if (this.level.rating > 10 && this.level.rating <= 20) {
         return 'black--text'
       } else {
@@ -59,7 +59,7 @@ export default class FumenLarge extends Vue {
   }
 
   get levelText () {
-    return this.level.rating ? 'Lv' + this.level.rating : 'Lv0'
+    return this.level?.rating ? 'Lv' + this.level.rating : 'Lv0'
   }
 }
 </script>

@@ -48,16 +48,16 @@
       <v-container>
         <v-row>
           <v-col
-            v-for="fumen in fumens"
-            :key="fumen.name"
+            v-for="level in levels"
+            :key="level.name"
             cols="12"
             sm="12"
             md="6"
             lg="4"
           >
             <!-- スマホでも読み込まれてしまうのでできれば負荷軽減すべき -->
-            <FumenLarge class="hidden-md-and-down" :fumen="fumen" />
-            <Fumen class="hidden-lg-and-up" :fumen="fumen" />
+            <FumenLarge class="hidden-md-and-down" :level="level" />
+            <Fumen class="hidden-lg-and-up" :level="level" />
           </v-col>
         </v-row>
       </v-container>
@@ -86,11 +86,11 @@ import FumenLarge from '~/components/FumenLarge.vue'
   }
 })
 export default class Index extends Vue {
-  fumens: Level[] = []
+  levels: Level[] = []
 
   async created (): Promise<void> {
     const levels = await getLevelList(this.$levelsApi, 1, undefined, undefined, undefined, undefined, undefined)
-    this.fumens = levels.items.slice(0, 3)
+    this.levels = levels.items.slice(0, 3)
   }
 }
 </script>

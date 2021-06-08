@@ -110,12 +110,12 @@
         <v-card-title>譜面投稿履歴</v-card-title>
         <v-row>
           <v-col
-            v-for="fumen in fumens"
-            :key="fumen.name"
+            v-for="level in levels"
+            :key="level.name"
             cols="12"
             col="12"
           >
-            <Fumen :fumen="fumen" />
+            <Fumen :level="level" />
           </v-col>
           <v-col cols="12">
             <v-pagination

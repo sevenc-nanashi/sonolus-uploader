@@ -20,21 +20,21 @@
           size="100"
           tile
         >
-          <v-img :src="fumen.cover.url" />
+          <v-img :src="level.cover.url" />
         </v-avatar>
       </v-badge>
       <div>
         <v-card-title
           class="display-5"
-          v-text="fumen.title"
+          v-text="level.title"
         />
         <v-card-subtitle
           class="display-6"
-          v-text="fumen.artist"
+          v-text="level.artist"
         />
-        <v-card-subtitle class="display-6" v-text="fumen.author" />
+        <v-card-subtitle class="display-6" v-text="level.author" />
       </div>
-      <v-row v-if="!fumen.public" align="center" justify="end">
+      <v-row v-if="!level.public" align="center" justify="end">
         <v-card-subtitle class="text-h5 is-centered">
           テスト中
         </v-card-subtitle>
@@ -49,10 +49,10 @@ import { Level } from '@/potato'
 
 @Component
 export default class Fumen extends Vue {
-  @Prop({ type: Object, required: true }) level : Level = {}
+  @Prop({ type: Object, required: true }) level? : Level
 
   get levelColor () {
-    if (this.level.rating) {
+    if (this.level?.rating) {
       if (this.level.rating <= 10) {
         return 'blue'
       } else if (this.level.rating <= 20) {
@@ -65,7 +65,7 @@ export default class Fumen extends Vue {
   }
 
   get levelTextColor () {
-    if (this.level.rating) {
+    if (this.level?.rating) {
       if (this.level.rating > 10 && this.level.rating <= 20) {
         return 'black--text'
       } else {
@@ -77,7 +77,7 @@ export default class Fumen extends Vue {
   }
 
   get levelText () {
-    return this.level.rating ? 'Lv' + this.level.rating : 'Lv0'
+    return this.level?.rating ? 'Lv' + this.level.rating : 'Lv0'
   }
 }
 </script>
