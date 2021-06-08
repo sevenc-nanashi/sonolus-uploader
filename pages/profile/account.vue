@@ -135,7 +135,7 @@
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
 import { Level } from '@/potato'
 import { auth } from '~/plugins/firebase'
-import { getUserLevelList } from '~/utils/fumenReader'
+import { getUserLevelList } from '~/utils/search-support'
 
 @Component
 export default class Account extends Vue {

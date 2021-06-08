@@ -79,7 +79,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
 import { Level, LevelGenreEnum } from '@/potato'
-import { getLevelList } from '@/utils/FumenReader'
+import { getLevelList } from '@/utils/search-support'
 import {
   SortOrder, ORDER_DESC, ORDER_ASC,
   SortKey, SORT_CREATED_DATE, SORT_DIFFICULTY, SORT_NAME,

@@ -75,7 +75,7 @@
 <script lang="ts">
 import { Level } from '@/potato'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { getLevelList } from '@/utils/FumenReader'
+import { getLevelList } from '@/utils/search-support'
 import Fumen from '~/components/Fumen.vue'
 import FumenLarge from '~/components/FumenLarge.vue'
 
