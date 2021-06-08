@@ -141,7 +141,7 @@ import { getUserLevelList } from '~/utils/search-support'
 export default class Account extends Vue {
   userName: string | null = 'aaa'
   userPhoto: string | null = ''
-  fumens: Level[] = []
+  levels: Level[] = []
   page: number = 1
   pageCount: number = 1
   openLoading: boolean = true
