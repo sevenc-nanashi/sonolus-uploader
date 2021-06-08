@@ -78,8 +78,8 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
-import { Level } from '@/potato'
-import { getLevelList } from '@/utils/fumenReader'
+import { Level, LevelGenreEnum } from '@/potato'
+import { getLevelList } from '@/utils/FumenReader'
 import {
   SortOrder, ORDER_DESC, ORDER_ASC,
   SortKey, SORT_CREATED_DATE, SORT_DIFFICULTY, SORT_NAME,
@@ -129,10 +129,10 @@ export default class FumenList extends Vue {
   genre: Select = { label: 'すべて', value: 'all' }
   genres: Array<Select> = [
     { label: 'すべて', value: 'all' },
-    { label: '総合', value: 'general' },
-    { label: 'J-POP', value: 'jpop' },
-    { label: 'アニメ', value: 'anime' },
-    { label: 'VOCALOID', value: 'vocaloid' }
+    { label: '総合', value: LevelGenreEnum.General },
+    { label: 'J-POP', value: LevelGenreEnum.Jpop },
+    { label: 'アニメ', value: LevelGenreEnum.Anime },
+    { label: 'VOCALOID', value: LevelGenreEnum.Vocaloid }
   ]
 
   async resetLevelList () {
