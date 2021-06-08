@@ -7,9 +7,10 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { Level, LevelGenreEnum, SonolusResourceLocatorTypeEnum } from '@/potato'
+import { Level, Engine, LevelGenreEnum, SonolusResourceLocatorTypeEnum } from '@/potato'
 import FormFumen from '@/components/FormFumen.vue'
 import { auth } from '@/plugins/firebase'
+import defaultEngine from '@/assets/json/defaultEngine.json'
 
 @Component({
   components: { FormFumen }
@@ -19,7 +20,7 @@ export default class LevelEdit extends Vue {
     name: '',
     version: 1,
     rating: 1,
-    engine: {},
+    engine: defaultEngine as Engine,
     useSkin: {
       item: undefined,
       useDefault: true

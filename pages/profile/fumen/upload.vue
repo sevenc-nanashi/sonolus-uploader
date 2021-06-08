@@ -7,8 +7,9 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { Level, LevelGenreEnum, SonolusResourceLocatorTypeEnum } from '@/potato'
+import { Level, Engine, LevelGenreEnum, SonolusResourceLocatorTypeEnum } from '@/potato'
 import FormFumen from '@/components/FormFumen.vue'
+import defaultEngine from '@/assets/json/defaultEngine.json'
 
 @Component({
   components: { FormFumen }
@@ -18,7 +19,7 @@ export default class LevelUpload extends Vue {
     name: '',
     version: 1,
     rating: 25,
-    engine: {},
+    engine: defaultEngine as Engine,
     useSkin: {
       useDefault: true
     },
@@ -44,6 +45,10 @@ export default class LevelUpload extends Vue {
     createdTime: 1,
     updatedTime: 1,
     description: ''
+  }
+
+  mounted () {
+    console.log(this.level)
   }
 }
 </script>

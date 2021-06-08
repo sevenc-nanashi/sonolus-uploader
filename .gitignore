@@ -88,3 +88,6 @@ sw.*
 
 # Vim swap files
 *.swp
+static/sweet-potato-logo2.png
+static/sweet-potato-logo.png
+assets/json/defaultEngine.json

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "resolveJsonModule": true,
     "typeRoots" : ["@types", "./types"],
     "target": "ES2018",
     "module": "ESNext",
