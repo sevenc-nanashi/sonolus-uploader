@@ -115,7 +115,9 @@
             cols="12"
             col="12"
           >
-            <Fumen :level="level" />
+            <nuxt-link :to="'/profile/fumen/edit?id=' + level.name">
+              <Fumen :level="level" />
+            </nuxt-link>
           </v-col>
           <v-col cols="12">
             <v-pagination
