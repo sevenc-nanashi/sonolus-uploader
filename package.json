@@ -17,7 +17,8 @@
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.14.0",
     "crypto-js": "^4.0.0",
-    "firebase": "^8.6.5",
+    "fflate": "^0.7.0",
+    "firebase": "^8.6.7",
     "jszip": "^3.6.0",
     "markdown-it-br": "^1.0.0",
     "nuxt": "^2.15.6",
@@ -36,7 +37,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^7.28.0",
     "eslint-plugin-nuxt": "^2.0.0",
-    "eslint-plugin-vue": "^7.10.0",
+    "eslint-plugin-vue": "^7.11.0",
     "raw-loader": "^4.0.2",
     "vuex-module-decorators": "^1.0.1"
   }

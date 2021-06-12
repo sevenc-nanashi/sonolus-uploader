@@ -170,7 +170,7 @@
 </template>
 
 <script lang="ts">
-import Jszip from 'jszip'
+import { gzipSync } from 'fflate'
 import SHA1 from 'crypto-js/sha1'
 import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
@@ -288,12 +288,10 @@ export default class FormFumen extends Vue {
     })
   }
 
-  async compressFumenData () {
-    const gzip = new Jszip()
-    gzip.file(this.files.data.name, this.files.data)
-    const gzippedFumen = await gzip.generateAsync({
-      type: 'blob',
-      compression: 'DEFLATE'
+  async compressFumenData () : Promise<Uint8Array> {
+    const massiveFile = new Uint8Array(await this.files.data.arrayBuffer())
+    const gzippedFumen = gzipSync(massiveFile, {
+      filename: this.files.data.name
     })
     return gzippedFumen
   }
@@ -316,9 +314,31 @@ export default class FormFumen extends Vue {
     return hash
   }
 
+  async generateSHA1HashByUint8 (binary: Uint8Array) : Promise<string> {
+    const blob = new Blob([binary.buffer], { type: 'application/octet-binary' })
+    /*
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'level.gz'
+    link.innerHTML = 'Download!'
+    document.body.appendChild(link)
+    */
+    return await this.generateSHA1Hash(blob as File)
+  }
+
   async uploadToStorage (ref: StorageReference, file: File) {
     try {
       const task = await ref.put(file as Blob)
+      return task
+    } catch (e: any) {
+      console.log(e)
+      return null
+    }
+  }
+
+  async uploadToStorageByUint8 (ref: StorageReference, binary: Uint8Array) {
+    try {
+      const task = await ref.put(binary)
       return task
     } catch (e: any) {
       console.log(e)
@@ -366,16 +386,19 @@ export default class FormFumen extends Vue {
           }
           this.uploadProgress = '譜面データを登録しています...'
           const dataZip = await this.compressFumenData()
-          const dataHash = await this.generateSHA1Hash(dataZip as File)
+          const dataHash = await this.generateSHA1HashByUint8(dataZip)
           const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-          await this.uploadToStorage(dataRef, dataZip as File)
+          await this.uploadToStorageByUint8(dataRef, dataZip)
           if (this.level.data !== undefined) {
             this.level.data.hash = dataHash
             this.level.data.url = await dataRef.getDownloadURL()
           }
           this.uploadProgress = '譜面情報を登録しています...'
           if (!this.isUpdate) {
-            await this.uploadFumen()
+            const resp = await this.uploadFumen()
+            if (resp) {
+              console.log(resp)
+            }
           } else {
             await this.editFumen()
           }
@@ -386,8 +409,11 @@ export default class FormFumen extends Vue {
       }
     // Storageのエミュレータが無いので開発環境ではファイル検証を行えない
     } else {
+      const dataZip = await this.compressFumenData()
+      const dataHash = await this.generateSHA1HashByUint8(dataZip)
+      console.log('譜面gzipのハッシュ値', dataHash)
       this.uploadProgress = '譜面情報を登録しています...'
-      await this.uploadFumen()
+      // await this.uploadFumen()
       this.resetForm()
     }
     this.uploadProgress = ''
