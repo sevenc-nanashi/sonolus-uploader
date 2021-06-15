@@ -3,7 +3,7 @@
 このページでは 投稿された譜面を実際に遊ぶ方法を解説します。
 
 ## iPhone/iPadの方
-<iframe width="350vw" max-width="100%" height="315" src="https://www.youtube.com/embed/qMUdLv69T7Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="348vw" max-width="100%" height="315" src="https://www.youtube.com/embed/qMUdLv69T7Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 <br>
 
 こちらの動画を参考に進めてください。
@@ -22,66 +22,49 @@
 本サイトの譜面一覧を取得するためにはサーバーアドレスを登録する必要があります。
 
 ### 一般用 サーバーアドレス
-本サーバーのメインアドレスは **https://sweetpotato.sonolus.jp** です。
+本サーバーのメインアドレスは **https://servers.purplepalette.net** です。
 このアドレスを入力すれば公開状態のすべての譜面を一覧表示できます
 
-### 企画用 サーバーアドレス
-Discordなどに記載があるサーバーアドレスを入力すると
-特定の企画の譜面のみを一覧表示できます
-
 ### テストプレイ用 サーバーアドレス
-創作譜面投稿者の方は ユーザーページに記載のある個別のURLをサーバーとして登録することで
-全体公開前の譜面をテストプレイすることができます。
+譜面を投稿する際、譜面を全体公開前にテストプレイする機能があります。
+ユーザーページに記載のある**https://servers.purplepalette.net/tests/<テストID>**のようなサーバーアドレスを利用します。
 譜面個別のURLを他者に教えると全体公開前にプレイしてもらうこともできます。
+※テストプレイ用アドレスからはテスト状態のすべての譜面がプレイできます、1つのみを共有することはできません
 
+### ユーザー個別 サーバーアドレス
+特定のユーザーの投稿した譜面のみを表示したい場合ユーザー個別アドレスが便利です。
+**https://servers.purplepalette.net/users/<ユーザーID>** のようにサーバーアドレス欄に入れると
+指定したユーザーの譜面のみを表示することができます。
 <br>
 
-## サーバー内絞り込み<hr>
-本サーバーではサーバー内で絞り込みをサポートしています
+## 検索クエリ<hr>
+本サーバーでは検索クエリでのソートと絞り込みをサポートしています
+
+### ソート
+検索時に `sort:<ソート方法>` または `s:<ソート方法>` で
+指定した方法で並べ替えることができます。
+#### 対応ソート方法
+- createdDate
+  - 譜面の登録日でソートします
+  - 代わりに `c` と略しても機能します
+- updatedDate
+  - 譜面の更新日でソートします
+  - 代わりに `u` と略しても機能します
+- rating
+  - 譜面の難易度でソートします
+  - 代わりに `r` と略しても機能します
+- name
+  - 譜面の名前(ID)でソートします
+  - 代わりに `n` と略しても機能します
 
 ### ジャンル絞り込み
-<サーバーアドレス>/<ジャンル名>
-で 指定したジャンルの譜面のみを取得できます
-対応ジャンルは以下の通りです
-- all(すべて)
-- jpop(J-POP)
-- anime(アニメ)
-- vocaloid(ボカロ)
-
-<br>
+検索時に `genre:<ジャンル名>` で 指定ジャンルのみの絞り込みが可能です
 
 ### 難易度絞り込み
-<サーバーアドレス>/<ジャンル名>/<難易度>
-で 指定した難易度の譜面のみを取得できます
-対応難易度は以下の通りです
-- all(すべて)
-- easy(簡単)
-- normal(普通)
-- hard(難しい)
-- extream(かなり難しい)
-- hell(地獄)
-<br>
+検索時に `rating:難易度` で 指定した範囲の難易度で絞り込みが可能です
+難易度の指定は `5-` `-10` `20-30` `1204` のように指定してください
 
-### サーバー内絞り込みの例
-**https://sweetpotato.sonolus.jp/anime/normal**
-ジャンルが アニメ かつ 難易度が 普通 の譜面のみを表示します
-
-**https://sweetpotato.sonolus.jp/all/hell**
-ジャンルが すべて かつ 難易度が 地獄 の譜面のみを表示します
-
-<br>
-
-## 検索クエリ絞り込み<hr>
-本サーバーでは検索クエリでの絞り込みをサポートしています
-
-### ジャンル絞り込み
-検索時に genre:<ジャンル名> で 指定ジャンルのみの絞り込みが可能です
-
-### 難易度絞り込み
-検索時に rating:難易度 で 指定した範囲の難易度で絞り込みが可能です
-難易度の指定は "5-10" "10-20" "20-30" のように指定してください
-
-### 検索クエリ絞り込みの例
+### 検索クエリの例
 **Daydream genre:anime**
 Daydream という単語が含まれる アニメの譜面のみを表示します
 
