@@ -89,7 +89,7 @@ export default class Index extends Vue {
   levels: Level[] = []
 
   async created (): Promise<void> {
-    const levels = await getLevelList(this.$levelsApi, 1, undefined, undefined, undefined, undefined, undefined)
+    const levels = await getLevelList(this.$levelsApi, 1, undefined, undefined, undefined, undefined, undefined, undefined)
     this.levels = levels.items.slice(0, 3)
   }
 }
