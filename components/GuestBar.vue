@@ -18,7 +18,7 @@ import { auth, google } from '~/plugins/firebase'
 @Component
 export default class GuestBar extends Vue {
   login (): void {
-    auth.signInWithPopup(google)
+    auth.signInWithRedirect(google)
   }
 }
 </script>

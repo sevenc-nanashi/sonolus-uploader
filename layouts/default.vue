@@ -2,10 +2,12 @@
   <v-app>
     <Header
       :open-drawer.sync="drawer"
+      :is-logined.sync="isLogined"
       :right-sided.sync="right"
     />
     <Drawer
       :open-drawer.sync="drawer"
+      :is-logined.sync="isLogined"
       :right-sided.sync="right"
     />
     <v-main class="has-blue-bg">
@@ -33,6 +35,7 @@ import Footer from '~/components/Footer.vue'
 export default class Default extends Vue {
   right: boolean = true
   drawer: boolean = false
+  isLogined: boolean = false
 }
 </script>
 

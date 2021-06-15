@@ -7,6 +7,28 @@
   >
     <v-list>
       <v-list-item
+        v-if="logined"
+        href="/profile/account"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-account</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>ユーザーページ</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
+        v-if="!logined"
+        @click="loginToAccount"
+      >
+        <v-list-item-icon>
+          <v-icon>mdi-login</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>ログイン</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-for="item in items"
         :key="item.title"
         :to="item.to"
@@ -37,12 +59,14 @@
 
 <script lang="ts">
 import { Component, Vue, PropSync } from 'nuxt-property-decorator'
+import { auth, google } from '~/plugins/firebase'
 
 @Component
 export default class Drawer extends Vue {
   @PropSync('openDrawer', { type: Boolean, default: false }) drawer!: boolean
 
   @PropSync('rightSided', { type: Boolean, default: true }) right!: boolean
+  @PropSync('isLogined', { type: Boolean, default: true }) logined!: boolean
 
   items = [
     {
@@ -71,6 +95,10 @@ export default class Drawer extends Vue {
       href: 'https://discord.gg/KEfVkfC6Q9'
     }
   ]
+
+  loginToAccount () : void {
+    auth.signInWithRedirect(google)
+  }
 }
 </script>
 

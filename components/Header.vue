@@ -46,9 +46,9 @@ import UserBar from '~/components/UserBar.vue'
 export default class Header extends Vue {
   @PropSync('openDrawer', { type: Boolean, default: false }) drawer!: boolean
   @PropSync('rightSided', { type: Boolean, default: true }) right!: boolean
+  @PropSync('isLogined', { type: Boolean, default: true }) logined!: boolean
 
   title: string = 'SweetPotato'
-  logined: boolean = false
   user: object = {}
 
   mounted () : void {
