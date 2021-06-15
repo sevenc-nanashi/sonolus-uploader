@@ -1,5 +1,6 @@
 <template>
   <v-row justify="center" align="center">
+    <!-- 読込中ダイアログ -->
     <v-dialog
       v-model="openLoading"
       hide-overlay
@@ -20,6 +21,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <!-- テストサーバー設定 ダイアログ -->
     <v-dialog
       v-model="openTestChange"
       persistent
@@ -62,6 +64,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- メイン -->
     <v-col cols="12" sm="12" md="8" lg="6">
       <v-card class="px-3 py-3" height="82vh">
         <v-card-title>アカウント情報</v-card-title>
@@ -80,22 +83,17 @@
           サイト登録日
         </v-card-title>
         <v-card-text>
-          AAAA/BB/CC DD:EE
+          {{ createdDate }}
         </v-card-text>
         <v-card-title>
-          テストプレイサーバーアドレス
+          テストサーバーアドレス
         </v-card-title>
         <v-card-text>
-          https://sweetpotato.sonolus.jp/test/kfcn
+          (誠意実装中です)
         </v-card-text>
         <v-card-title>
-          <v-btn xl block color="info" @click="openTestChange = true">
-            テストプレイサーバーのアドレスを変更する
-          </v-btn>
-        </v-card-title>
-        <v-card-title>
-          <v-btn xl block color="info" @click="getJwtToken">
-            Firebase AuthorizationのJWTトークンを作る(デバッグ)
+          <v-btn disabled xl block color="info" @click="openTestChange = true">
+            テストサーバーのアドレスを変更する
           </v-btn>
         </v-card-title>
         <v-card-title>
@@ -193,14 +191,6 @@ export default class Account extends Vue {
     })
   }
 
-  async getJwtToken () {
-    const token = await auth.currentUser?.getIdToken(true)
-    if (token) {
-      alert('トークン作成成功(consoleをみてね)')
-      console.log(token)
-    }
-  }
-
   logout () {
     this.$router.push('/')
     auth.signOut()
@@ -209,6 +199,18 @@ export default class Account extends Vue {
   @Watch('page')
   onPageChange () {
     this.resetUserLevelList()
+  }
+
+  get createdDate () : string {
+    const user = auth.currentUser
+    if (user) {
+      if (user.metadata.creationTime) {
+        const d = new Date(user.metadata.creationTime)
+        const formattedDate = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`.replace(/\n|\r/g, '')
+        return formattedDate
+      }
+    }
+    return ''
   }
 
   head () {
