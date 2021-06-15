@@ -18,7 +18,7 @@ type FilterDifficultyKey = [number, number]
 const DIFFICULTY_ALL: FilterDifficultyKey = [1, 100]
 const DIFFICULTY_EASY: FilterDifficultyKey = [1, 10]
 const DIFFICULTY_NORMAL: FilterDifficultyKey = [11, 20]
-const DIFFICULTY_HARD: FilterDifficultyKey = [21, 30]
+const DIFFICULTY_HARD: FilterDifficultyKey = [21, 50]
 
 export {
   SortOrder, ORDER_ASC, ORDER_DESC,
