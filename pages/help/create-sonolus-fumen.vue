@@ -10,7 +10,6 @@ SonolusのPJSekai譜面は以下の流れで作成します
 - 4. 本サイトにアップロード
 <br>
 
-
 ## 1. Chunithmシミュレータ向け 創作譜面エディタで 譜面作成<hr>
 
 SonolusおよびPJSekaiは一定のルールの上でChunithmの創作譜面と互換性があります。そのため、[M4ple-Editor](https://github.com/TinyTany/M4ple-Editor) もしくは [Ched](https://github.com/paralleltree/Ched)を用いることで譜面を作成することができます。本サイトチームでは 諸事情により [M4ple-Editor](https://github.com/TinyTany/M4ple-Editor)の利用のみをサポートしています。個人で利用するのは構いませんが問題発生時はご自身で解決してください。 プレイ時にどのノーツがどれに対応しているかは [別記対応表](/help/pjsekai-chunithm-compare)をご確認ください。

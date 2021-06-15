@@ -4,7 +4,7 @@
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/WcVjwIn_lPM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-![対応表](https://user-images.githubusercontent.com/16555696/108359313-313e5800-7233-11eb-95b3-fb4d2bc079b1.PNG)  
+![対応表](https://user-images.githubusercontent.com/16555696/108359313-313e5800-7233-11eb-95b3-fb4d2bc079b1.PNG)<br>
 PJSekaiにおけるフリックは、赤いタップノーツを配置し、その上に振り上げAIRノーツを配置することで表現できる。
 
 <br>
@@ -28,7 +28,7 @@ PJSekaiにおけるフリックは、赤いタップノーツを配置し、そ�
 <img width="145" alt="スライド屈折フリック配置" src="https://user-images.githubusercontent.com/16555696/108361370-b9256180-7235-11eb-9e75-7df7faba48dd.PNG">
 <img width="644" alt="スライド中継点フリック配置検証 " src="https://user-images.githubusercontent.com/16555696/108361529-f5f15880-7235-11eb-8429-b82f23d20b78.PNG"><br>
 
-- スライドの中継点もしくは不可視中継点の上に、チュウニズムのフリックノーツを配置すると、配置した中継点におけるスライドの形状を無視し、前後の中継点を補間して接続する。  
+- スライドの中継点もしくは不可視中継点の上に、チュウニズムのフリックノーツを配置すると、配置した中継点におけるスライドの形状を無視し、前後の中継点を補間して接続する。<br>
 - 画像の場合は、屈折しているスライドの上に中継点を配置し、その上にフリックノーツを配置している。
 - そのため、屈折が無視され、直線的になっている。
 - 不可視中継点の上にフリックノーツを配置した場合、中継点は描画されない。
