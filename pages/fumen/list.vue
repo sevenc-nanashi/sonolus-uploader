@@ -142,7 +142,8 @@ export default class FumenList extends Vue {
       this.keyword,
       this.sortParam, this.sortOrderParam,
       this.genreParam,
-      this.difficultyParam
+      this.difficultyParam,
+      undefined
     )
     this.levels = resp.items
     this.pageCount = resp.pageCount
