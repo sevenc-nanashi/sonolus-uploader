@@ -136,6 +136,8 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
 import { Level } from '@/potato'
+import { getJwtToken } from '@/utils/token'
+import { RequestOptions } from '~/types/upload/request-options'
 import { auth } from '~/plugins/firebase'
 import { getUserLevelList } from '~/utils/search-support'
 
@@ -148,10 +150,20 @@ export default class Account extends Vue {
   pageCount: number = 1
   openLoading: boolean = true
   openTestChange: boolean = false
+  requestOptions : RequestOptions = {
+    baseURL: this.$config.API_ENDPOINT,
+    headers: {
+      Authorization: ''
+    }
+  }
 
   async resetUserLevelList () {
     const uid = auth.currentUser?.uid
     if (uid) {
+      const token = await getJwtToken()
+      if (token) {
+        this.requestOptions.headers.Authorization = `Bearer ${token}`
+      }
       const resp = await getUserLevelList(
         this.$usersApi,
         uid,
@@ -160,7 +172,8 @@ export default class Account extends Vue {
         undefined,
         undefined,
         undefined,
-        undefined
+        undefined,
+        this.requestOptions
       )
       this.levels = resp.items
       this.pageCount = resp.pageCount
