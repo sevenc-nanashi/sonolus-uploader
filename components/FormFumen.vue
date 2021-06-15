@@ -76,23 +76,24 @@
               <v-file-input
                 accept="image/png,image/jpeg"
                 prepend-icon="mdi-file-image"
-                label="Select jacket (*.png, *.jpg) (Optional)"
+                :label="!isUpdateForm ? 'Select jacket (*.png, *.jpg)' : 'Select jacket (*.png, *.jpg) (Optional)'"
+                :rules="[v => !!v || isUpdateForm || 'File is mandatory']"
                 @click:clear="files.cover = null"
                 @change="files.cover = $event"
               />
               <v-file-input
                 accept="audio/mpeg"
                 prepend-icon="mdi-music"
-                label="Select music (*.mp3)"
-                :rules="[v => !!v || 'File is mandatory']"
+                :label="!isUpdateForm ? 'Select music (*.mp3)' : 'Select music (*.mp3) (Optional)'"
+                :rules="[v => !!v || isUpdateForm || 'File is mandatory']"
                 @click:clear="files.bgm = null"
                 @change="files.bgm = $event"
               />
               <v-file-input
                 accept="text/json"
                 prepend-icon="mdi-file-music-outline"
-                label="Select chart (level.json)"
-                :rules="[v => !!v || 'File is mandatory']"
+                :label="!isUpdateForm ? 'Select chart (level.json)' : 'Select chart (level.json) (Optional)'"
+                :rules="[v => !!v || isUpdateForm || 'File is mandatory']"
                 @click:clear="files.data = null"
                 @change="files.data = $event"
               />
@@ -107,7 +108,7 @@
                 readonly
               />
               <v-checkbox
-                v-model="level._public"
+                v-model="level.public"
                 block
                 label="一般公開する(テストプレイ後に選択できます)"
                 :disabled="!isUpdateForm"
@@ -178,14 +179,8 @@ import { Level, LevelGenreEnum } from '@/potato'
 import { getJwtToken } from '@/utils/token'
 import { auth, storage, StorageReference } from '~/plugins/firebase'
 import { UploadFiles } from '~/types/upload/files'
+import { RequestOptions } from '~/types/upload/request-options'
 const ToS = require('~/assets/texts/ToS.txt')
-
-interface RequestOptions {
-  baseURL: string,
-  headers: {
-    Authorization: string
-  }
-}
 
 @Component
 export default class FormFumen extends Vue {
@@ -230,7 +225,7 @@ export default class FormFumen extends Vue {
 
   uploadProgress: string = ''
   uploadSuccess: boolean = false
-  termsOfUses: string = ToS
+  termsOfUses: string = ToS.default
 
   requestOptions : RequestOptions = {
     baseURL: this.$config.API_ENDPOINT,
@@ -368,30 +363,36 @@ export default class FormFumen extends Vue {
       this.uploadProgress = '投稿を開始します'
       if (this.level !== undefined) {
         try {
-          this.uploadProgress = '譜面カバーを登録しています...'
-          const coverHash = await this.generateSHA1Hash(this.files.cover)
-          const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
-          await this.uploadToStorage(coverRef, this.files.cover)
-          if (this.level.cover !== undefined) {
-            this.level.cover.hash = coverHash
-            this.level.cover.url = await coverRef.getDownloadURL()
+          if (this.files.cover.name !== '') {
+            this.uploadProgress = '譜面カバーを登録しています...'
+            const coverHash = await this.generateSHA1Hash(this.files.cover)
+            const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
+            await this.uploadToStorage(coverRef, this.files.cover)
+            if (this.level.cover !== undefined) {
+              this.level.cover.hash = coverHash
+              this.level.cover.url = await coverRef.getDownloadURL()
+            }
           }
-          this.uploadProgress = '譜面BGMを登録しています...'
-          const bgmHash = await this.generateSHA1Hash(this.files.bgm)
-          const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
-          await this.uploadToStorage(bgmRef, this.files.bgm)
-          if (this.level.bgm !== undefined) {
-            this.level.bgm.hash = bgmHash
-            this.level.bgm.url = await bgmRef.getDownloadURL()
+          if (this.files.bgm.name !== '') {
+            this.uploadProgress = '譜面BGMを登録しています...'
+            const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+            const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
+            await this.uploadToStorage(bgmRef, this.files.bgm)
+            if (this.level.bgm !== undefined) {
+              this.level.bgm.hash = bgmHash
+              this.level.bgm.url = await bgmRef.getDownloadURL()
+            }
           }
-          this.uploadProgress = '譜面データを登録しています...'
-          const dataZip = await this.compressFumenData()
-          const dataHash = await this.generateSHA1HashByUint8(dataZip)
-          const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-          await this.uploadToStorageByUint8(dataRef, dataZip)
-          if (this.level.data !== undefined) {
-            this.level.data.hash = dataHash
-            this.level.data.url = await dataRef.getDownloadURL()
+          if (this.files.data.name !== '') {
+            this.uploadProgress = '譜面データを登録しています...'
+            const dataZip = await this.compressFumenData()
+            const dataHash = await this.generateSHA1HashByUint8(dataZip)
+            const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
+            await this.uploadToStorageByUint8(dataRef, dataZip)
+            if (this.level.data !== undefined) {
+              this.level.data.hash = dataHash
+              this.level.data.url = await dataRef.getDownloadURL()
+            }
           }
           this.uploadProgress = '譜面情報を登録しています...'
           if (!this.isUpdate) {
@@ -413,7 +414,7 @@ export default class FormFumen extends Vue {
       const dataHash = await this.generateSHA1HashByUint8(dataZip)
       console.log('譜面gzipのハッシュ値', dataHash)
       this.uploadProgress = '譜面情報を登録しています...'
-      // await this.uploadFumen()
+      await this.uploadFumen()
       this.resetForm()
     }
     this.uploadProgress = ''
