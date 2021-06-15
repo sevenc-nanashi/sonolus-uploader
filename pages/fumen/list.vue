@@ -234,5 +234,11 @@ export default class FumenList extends Vue {
   created () {
     this.resetLevelList()
   }
+
+  head () {
+    return {
+      title: '譜面一覧'
+    }
+  }
 }
 </script>

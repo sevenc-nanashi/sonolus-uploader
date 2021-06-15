@@ -47,3 +47,13 @@ __Twitter:__ -
 
 あなたもSonolusの創作譜面作りませんか/遊びませんか? Sonolusがよくわからなくても、雑談だけでも構わないです! もし興味があれば [Discordサーバー]()へ お越しください! ちなみに開発班がすごく足りてないのでご協力頂ける方を大募集しています!!!
 </template>
+
+<script>
+export default {
+  head () {
+    return {
+      title: 'PurplePaletteについて'
+    }
+  }
+}
+</script>

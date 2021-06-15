@@ -31,3 +31,13 @@ SonolusおよびPJSekaiは一定のルールの上でChunithmの創作譜面と�
 
 お疲れさまでした!
 </template>
+
+<script>
+export default {
+  head () {
+    return {
+      title: '創作譜面の作り方'
+    }
+  }
+}
+</script>

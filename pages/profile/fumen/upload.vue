@@ -50,5 +50,11 @@ export default class LevelUpload extends Vue {
   mounted () {
     console.log(this.level)
   }
+
+  head () {
+    return {
+      title: '譜面投稿'
+    }
+  }
 }
 </script>

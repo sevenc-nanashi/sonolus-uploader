@@ -92,5 +92,11 @@ export default class Index extends Vue {
     const levels = await getLevelList(this.$levelsApi, 1, undefined, undefined, undefined, undefined, undefined, undefined)
     this.levels = levels.items.slice(0, 3)
   }
+
+  head () {
+    return {
+      titleTemplate: '%s'
+    }
+  }
 }
 </script>

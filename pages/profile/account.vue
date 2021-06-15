@@ -210,5 +210,11 @@ export default class Account extends Vue {
   onPageChange () {
     this.resetUserLevelList()
   }
+
+  head () {
+    return {
+      title: 'マイページ'
+    }
+  }
 }
 </script>

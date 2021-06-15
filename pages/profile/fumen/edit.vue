@@ -73,5 +73,11 @@ export default class LevelEdit extends Vue {
       this.$router.push('/profile/account')
     }
   }
+
+  head () {
+    return {
+      title: '譜面編集'
+    }
+  }
 }
 </script>

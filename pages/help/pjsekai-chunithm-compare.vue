@@ -52,3 +52,13 @@ PJSekaiにおけるフリックは、赤いタップノーツを配置し、そ�
 <img width="80" alt="キャプチャ" src="https://user-images.githubusercontent.com/16555696/110311704-83f77c80-8047-11eb-8c97-4aad0d7cedef.PNG">
 <img width="27" alt="キャプチャ2" src="https://user-images.githubusercontent.com/16555696/110311738-907bd500-8047-11eb-9214-d2e920ef8b54.PNG">
 </template>
+
+<script>
+export default {
+  head () {
+    return {
+      title: 'Chunithm/Sonolusの対応表'
+    }
+  }
+}
+</script>
