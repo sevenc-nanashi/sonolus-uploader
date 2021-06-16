@@ -22,7 +22,9 @@
     "jszip": "^3.6.0",
     "markdown-it-br": "^1.0.0",
     "nuxt": "^2.15.7",
+    "nuxt-precompress": "^0.5.9",
     "nuxt-property-decorator": "^2.9.1",
+    "nuxt-purgecss": "^1.0.0",
     "save": "^2.4.0",
     "vuex-persistedstate": "^4.0.0-beta.3"
   },
@@ -32,7 +34,7 @@
     "@nuxtjs/eslint-config-typescript": "^6.0.1",
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/vuetify": "^1.12.1",
-    "@openapitools/openapi-generator-cli": "^2.3.3",
+    "@openapitools/openapi-generator-cli": "^2.3.4",
     "@types/crypto-js": "^4.0.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.28.0",
