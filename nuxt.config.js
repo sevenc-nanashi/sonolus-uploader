@@ -14,11 +14,17 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      { hid: 'description', name: 'description', content: 'PJSekai創作譜面投稿サイト' },
       { name: 'robots', content: 'nofollow,noindex,noarchive' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'preload', href: '/sweet-potato-logo3.png' },
+      { rel: 'preconnect dns-prefetch', href: '//servers.purplepalette.net' },
+      { rel: 'preconnect dns-prefetch', href: '//firebasestorage.googleapis.com' },
+      { rel: 'preconnect dns-prefetch', href: '//www.googleapis.com' },
+      { rel: 'preconnect dns-prefetch', href: '//cdn.jsdelivr.net' },
+      { rel: 'dns-prefetch', href: '//lh3.googleusercontent.com' }
     ]
   },
 
@@ -137,7 +143,26 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: 'ja'
+      lang: 'ja',
+      name: 'SweetPotato',
+      short_name: 'potato',
+      theme_color: '#9c27b0',
+      ogTitle: 'SweetPotato',
+      ogSiteName: 'SweetPotato',
+      ogImage: 'https://potato.purplepalette.net/sweet-potato-logo3.png',
+      display: 'standalone',
+      description: 'PJSekai創作譜面投稿サイト',
+      shortcuts: [
+        {
+          name: '譜面一覧画面を開く',
+          short_name: '一覧',
+          description: '新着順で投稿一覧画面を開きます',
+          url: 'https://potato.purplepalette.net/fumen/list',
+          icons: [{
+            src: 'https://potato.purplepalette.net/menu.png', sizes: '128x128'
+          }]
+        }
+      ]
     }
   },
 
