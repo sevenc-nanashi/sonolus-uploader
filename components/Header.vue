@@ -23,6 +23,9 @@
     <UserBar v-else :avatar-url="user.photoURL" />
     <v-btn
       v-if="right"
+      aria-label="menuButton"
+      aria-haspopup="true"
+      aria-expanded="false"
       icon
       @click.stop="drawer = !drawer"
     >
