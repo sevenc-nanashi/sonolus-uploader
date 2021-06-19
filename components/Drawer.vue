@@ -85,6 +85,11 @@ export default class Drawer extends Vue {
       to: '/help/create-sonolus-fumen'
     },
     {
+      icon: 'mdi-information',
+      title: '投稿ガイドライン',
+      to: '/help/guide-potato-fumen'
+    },
+    {
       icon: 'mdi-palette',
       title: 'PurplePaletteについて',
       to: '/help/about-purplepalette'
