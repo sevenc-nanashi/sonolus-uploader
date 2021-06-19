@@ -19,7 +19,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "core-js": "^3.14.0",
     "crypto-js": "^4.0.0",
-    "fflate": "^0.7.0",
+    "fflate": "^0.7.1",
     "firebase": "^8.6.8",
     "jszip": "^3.6.0",
     "markdown-it-br": "^1.0.0",
