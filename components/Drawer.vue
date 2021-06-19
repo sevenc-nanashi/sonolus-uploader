@@ -97,7 +97,7 @@ export default class Drawer extends Vue {
     {
       icon: 'mdi-discord',
       title: 'Discordに参加!',
-      href: 'https://discord.gg/KEfVkfC6Q9'
+      href: this.$config.DISCORD_URL
     }
   ]
 

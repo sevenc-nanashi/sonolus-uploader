@@ -16,7 +16,7 @@
                   Sonolus創作譜面ポータル SweetPotato へようこそ!
                 </v-list-item>
                 <v-list-item>
-                  <v-btn icon class="mx-auto">
+                  <v-btn :href="$config.DISCORD_URL" icon class="mx-auto">
                     <v-icon>mdi-discord</v-icon>
                   </v-btn>
                 </v-list-item>
