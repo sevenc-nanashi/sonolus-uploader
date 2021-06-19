@@ -36,6 +36,9 @@
 
 <script lang="ts">
 import { Component, Vue, PropSync } from 'nuxt-property-decorator'
+import { RequestOptions } from '@/types/upload/request-options'
+import { setupUser } from '@/utils/account-support'
+import { getJwtToken } from '@/utils/token'
 import { auth } from '~/plugins/firebase'
 import GuestBar from '~/components/GuestBar.vue'
 import UserBar from '~/components/UserBar.vue'
@@ -53,12 +56,22 @@ export default class Header extends Vue {
 
   title: string = 'SweetPotato'
   user: object = {}
+  requestOptions : RequestOptions = {
+    baseURL: this.$config.API_ENDPOINT,
+    headers: {
+      Authorization: ''
+    }
+  }
 
   mounted () : void {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.logined = true
         this.user = user
+        getJwtToken().then((token) => {
+          this.requestOptions.headers.Authorization = `Bearer ${token}`
+          setupUser(this.$usersApi, user, this.requestOptions)
+        })
       } else {
         this.logined = false
         this.user = {}
