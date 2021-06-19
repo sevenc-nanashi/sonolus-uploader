@@ -9,18 +9,18 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - SweetPotato',
-    title: 'SweetPotato',
+    titleTemplate: `%s - ${process.env.SITE_NAME}`,
+    title: process.env.SITE_NAME,
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'PJSekai創作譜面投稿サイト' },
+      { hid: 'description', name: 'description', content: process.env.SITE_DESCRIPTION },
       { name: 'robots', content: 'nofollow,noindex,noarchive' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'preload', href: '/sweet-potato-logo3.png', as: 'image' },
-      { rel: 'preconnect dns-prefetch', href: '//servers.purplepalette.net' },
+      { rel: 'preconnect dns-prefetch', href: process.env.API_ENDPOINT },
       { rel: 'preconnect dns-prefetch', href: '//firebasestorage.googleapis.com' },
       { rel: 'preconnect dns-prefetch', href: '//www.googleapis.com' },
       { rel: 'preconnect dns-prefetch', href: '//cdn.jsdelivr.net' },
@@ -144,22 +144,23 @@ export default {
   pwa: {
     manifest: {
       lang: 'ja',
-      name: 'SweetPotato',
-      short_name: 'potato',
-      theme_color: '#9c27b0',
-      ogTitle: 'SweetPotato',
-      ogSiteName: 'SweetPotato',
-      ogImage: 'https://potato.purplepalette.net/sweet-potato-logo3.png',
+      name: process.env.SITE_NAME,
+      short_name: process.env.PWA_NAME,
+      theme_color: process.env.PWA_COLOR_THEME,
+      background_color: process.env.PWA_COLOR_BACKGROUND,
+      ogTitle: process.env.SITE_NAME,
+      ogSiteName: process.env.SITE_NAME,
+      ogImage: `${process.env.FRONT_ENDPOINT}/sweet-potato-logo3.png`,
       display: 'standalone',
-      description: 'PJSekai創作譜面投稿サイト',
+      description: process.env.SITE_DESCRIPTION,
       shortcuts: [
         {
           name: '譜面一覧画面を開く',
           short_name: '一覧',
           description: '新着順で投稿一覧画面を開きます',
-          url: 'https://potato.purplepalette.net/fumen/list',
+          url: `${process.env.FRONT_ENDPOINT}/fumen/list`,
           icons: [{
-            src: 'https://potato.purplepalette.net/menu.png', sizes: '128x128'
+            src: `${process.env.FRONT_ENDPOINT}/menu.png`, sizes: '128x128'
           }]
         }
       ]
@@ -186,7 +187,8 @@ export default {
   },
 
   publicRuntimeConfig: {
-    API_ENDPOINT: process.env.API_ENDPOINT
+    API_ENDPOINT: process.env.API_ENDPOINT,
+    FRONT_ENDPOINT: process.env.FRONT_ENDPOINT
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
