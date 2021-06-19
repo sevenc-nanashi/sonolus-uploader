@@ -36,6 +36,7 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
+                  v-model="potatoUser.testId"
                   label="テストコード"
                   type="text"
                   required
@@ -57,7 +58,7 @@
           <v-btn
             color="blue darken-1"
             text
-            @click="openTestChange = false"
+            @click="setTestId(); openTestChange = false"
           >
             保存
           </v-btn>
@@ -89,10 +90,10 @@
           テストサーバーアドレス
         </v-card-title>
         <v-card-text>
-          (誠意実装中です)
+          {{ testServerAddress }}
         </v-card-text>
         <v-card-title>
-          <v-btn disabled xl block color="info" @click="openTestChange = true">
+          <v-btn xl block color="info" @click="openTestChange = true">
             テストサーバーのアドレスを変更する
           </v-btn>
         </v-card-title>
@@ -133,16 +134,18 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'nuxt-property-decorator'
-import { Level } from '@/potato'
+import { Level, User } from '@/potato'
 import { getJwtToken } from '@/utils/token'
 import { RequestOptions } from '~/types/upload/request-options'
 import { auth } from '~/plugins/firebase'
 import { getUserLevelList } from '~/utils/search-support'
+import { editUser } from '~/utils/account-support'
 
 @Component
 export default class Account extends Vue {
-  userName: string | null = 'aaa'
+  userName: string | null = '読込中'
   userPhoto: string | null = ''
+  potatoUser: User = { testId: '' }
   levels: Level[] = []
   page: number = 1
   pageCount: number = 1
@@ -155,27 +158,35 @@ export default class Account extends Vue {
     }
   }
 
-  async resetUserLevelList () {
-    const uid = auth.currentUser?.uid
-    if (uid) {
-      const token = await getJwtToken()
-      if (token) {
-        this.requestOptions.headers.Authorization = `Bearer ${token}`
+  async resetUserLevelList (uid: string) {
+    const resp = await getUserLevelList(
+      this.$usersApi,
+      uid,
+      this.page,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.requestOptions
+    )
+    this.levels = resp.items
+    this.pageCount = resp.pageCount
+    this.openLoading = false
+  }
+
+  async resetUserSettings (uid: string) {
+    const resp = await this.$usersApi.getUser(uid)
+    this.potatoUser = resp.data
+  }
+
+  async setTestId () {
+    if (this.potatoUser) {
+      try {
+        await editUser(this.$usersApi, this.potatoUser, this.requestOptions)
+      } catch (e) {
+        alert('既に使われているテストIDです')
       }
-      const resp = await getUserLevelList(
-        this.$usersApi,
-        uid,
-        this.page,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        this.requestOptions
-      )
-      this.levels = resp.items
-      this.pageCount = resp.pageCount
-      this.openLoading = false
     }
   }
 
@@ -184,7 +195,11 @@ export default class Account extends Vue {
       if (user) {
         this.userName = user.displayName
         this.userPhoto = user.photoURL
-        this.resetUserLevelList()
+        getJwtToken().then((token) => {
+          this.requestOptions.headers.Authorization = `Bearer ${token}`
+          this.resetUserLevelList(user.uid)
+          this.resetUserSettings(user.uid)
+        })
       } else {
         this.$router.push('/')
       }
@@ -198,19 +213,28 @@ export default class Account extends Vue {
 
   @Watch('page')
   onPageChange () {
-    this.resetUserLevelList()
+    if (this.potatoUser) {
+      if (this.potatoUser.userId) {
+        this.resetUserLevelList(this.potatoUser.userId)
+      }
+    }
+  }
+
+  get testServerAddress () : string {
+    if (this.potatoUser) {
+      return `${this.$config.API_ENDPOINT}/tests/${this.potatoUser.testId}`
+    }
+    return '読込中'
   }
 
   get createdDate () : string {
-    const user = auth.currentUser
-    if (user) {
-      if (user.metadata.creationTime) {
-        const d = new Date(user.metadata.creationTime)
-        const formattedDate = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`.replace(/\n|\r/g, '')
-        return formattedDate
+    if (this.potatoUser) {
+      if (this.potatoUser.createdTime) {
+        const dt = new Date(this.potatoUser.createdTime * 1000)
+        return `${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}`.replace(/\n|\r/g, '')
       }
     }
-    return ''
+    return '読込中'
   }
 
   head () {
