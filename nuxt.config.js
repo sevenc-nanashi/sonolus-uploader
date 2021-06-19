@@ -189,7 +189,8 @@ export default {
   publicRuntimeConfig: {
     API_ENDPOINT: process.env.API_ENDPOINT,
     FRONT_ENDPOINT: process.env.FRONT_ENDPOINT,
-    DISCORD_URL: process.env.DISCORD_URL
+    DISCORD_URL: process.env.DISCORD_URL,
+    DMCA_URL: process.env.DMCA_URL
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
