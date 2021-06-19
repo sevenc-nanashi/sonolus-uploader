@@ -19,7 +19,7 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'preload', href: '/sweet-potato-logo3.png' },
+      { rel: 'preload', href: '/sweet-potato-logo3.png', as: 'image' },
       { rel: 'preconnect dns-prefetch', href: '//servers.purplepalette.net' },
       { rel: 'preconnect dns-prefetch', href: '//firebasestorage.googleapis.com' },
       { rel: 'preconnect dns-prefetch', href: '//www.googleapis.com' },
