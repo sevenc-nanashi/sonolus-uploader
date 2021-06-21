@@ -9,9 +9,9 @@ Sonolusを盛り上げるための日本創作譜面コミュニティです!た
 ### 紫式部 / 部長 + 開発班
 <img width="128" alt="紫式部のプロフィール画像" src="https://cdn.discordapp.com/avatars/826082931201802240/fb454af480e46d4a348c7f0629a68e57.png?size=128">
 
-Discordコミュニティ作ったり、創作譜面を本家でプレイする動画を作成しているえらい人。<br>
+再生ツールと創作譜面のコミュニティを作った人、部長、動的解析、電子工作が得意。<br>
 
-__ひとこと:__ (お忙しそうなので省略)
+__ひとこと:__ えななんのパンツは何色？
 __Twitter:__ https://twitter.com/PurplePaletteCH
 <br>
 
