@@ -17,7 +17,7 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/markdownit": "^2.0.0",
     "@nuxtjs/pwa": "^3.3.5",
-    "core-js": "^3.14.0",
+    "core-js": "^3.15.0",
     "crypto-js": "^4.0.0",
     "fflate": "^0.7.1",
     "firebase": "^8.6.8",
