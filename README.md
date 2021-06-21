@@ -29,3 +29,6 @@ By using the [OpenAPI-Spec](https://github.com/OAI/OpenAPI-Specification) from a
 - API version: 1.0
 - Build date: 2021-05-19T23:54:50.576+09:00[Asia/Tokyo]
 - For more information, please visit [https://discord.gg/KEfVkfC6Q9](https://discord.gg/KEfVkfC6Q9)
+
+## For more information
+Please see [wiki sections](https://github.com/PurplePalette/sonolus-uploader/wiki) of sonolus-uploader-core.
