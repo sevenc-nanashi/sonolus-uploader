@@ -12,6 +12,13 @@
           <v-card-subtitle>
             {{ formDescription }}
           </v-card-subtitle>
+          <v-card-subtitle>
+            投稿前には
+            <nuxt-link to="/help/guide-potato-fumen">
+              投稿ガイドライン
+            </nuxt-link>
+            を必ずご確認ください!
+          </v-card-subtitle>
           <v-row justify="center">
             <v-col cols="12" lg="6">
               <div class="mt-4 title text-h5">
