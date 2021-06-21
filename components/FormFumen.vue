@@ -18,13 +18,6 @@
                 譜面情報
               </div>
               <v-text-field
-                v-model="level.name"
-                :rules="rules.name"
-                counter="50"
-                label="Name"
-                required
-              />
-              <v-text-field
                 v-model="level.title"
                 :rules="rules.title"
                 counter="50"
@@ -171,15 +164,16 @@
 </template>
 
 <script lang="ts">
-import { gzipSync } from 'fflate'
-import SHA1 from 'crypto-js/sha1'
-import LibTypedArrays from 'crypto-js/lib-typedarrays'
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
 import { Level, LevelGenreEnum } from '@/potato'
 import { getJwtToken } from '@/utils/token'
-import { auth, storage, StorageReference } from '~/plugins/firebase'
-import { UploadFiles } from '~/types/upload/files'
-import { RequestOptions } from '~/types/upload/request-options'
+import { auth, storage, StorageReference } from '@/plugins/firebase'
+import { UploadFiles } from '@/types/upload/files'
+import { RequestOptions } from '@/types/upload/request-options'
+import { gzipSync } from 'fflate'
+import SHA1 from 'crypto-js/sha1'
+import { customAlphabet } from 'nanoid'
+import LibTypedArrays from 'crypto-js/lib-typedarrays'
 const ToS = require('~/assets/texts/ToS.txt')
 
 @Component
@@ -188,10 +182,6 @@ export default class FormFumen extends Vue {
   @PropSync('levelProp', { type: Object }) level! : Level
 
   rules : object = {
-    name: [
-      (v: any) => { return !!v || 'Name is required' },
-      (v: any) => (v && v.length <= 50) || 'Name must be less than 50 characters'
-    ],
     title: [
       (v: any) => { return !!v || 'Title is required' },
       (v: any) => (v && v.length <= 50) || 'Title must be less than 50 characters'
@@ -396,6 +386,8 @@ export default class FormFumen extends Vue {
           }
           this.uploadProgress = '譜面情報を登録しています...'
           if (!this.isUpdate) {
+            const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 12)
+            this.level.name = nanoid()
             const resp = await this.uploadFumen()
             if (resp) {
               console.log(resp)
