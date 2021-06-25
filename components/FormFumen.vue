@@ -174,7 +174,7 @@
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
 import { Level, LevelGenreEnum } from '@/potato'
 import { getJwtToken } from '@/utils/token'
-import { auth, storage, StorageReference } from '@/plugins/firebase'
+import { auth, storage, StorageReference, StorageMetadata } from '@/plugins/firebase'
 import { UploadFiles } from '@/types/upload/files'
 import { RequestOptions } from '@/types/upload/request-options'
 import { gzipSync } from 'fflate'
@@ -320,7 +320,9 @@ export default class FormFumen extends Vue {
 
   async uploadToStorage (ref: StorageReference, file: File) {
     try {
-      const task = await ref.put(file as Blob)
+      const metadata : StorageMetadata = {}
+      metadata.cacheControl = 'public,max-age=31536000'
+      const task = await ref.put(file as Blob, metadata)
       return task
     } catch (e: any) {
       console.log(e)

@@ -28,5 +28,6 @@ if (process.env.NODE_ENV !== 'production') {
 export { auth, storage }
 export const google = new firebase.auth.GoogleAuthProvider()
 export type StorageReference = firebase.storage.Reference
+export type StorageMetadata = firebase.storage.UploadMetadata
 export type FirebaseAuth = firebase.auth.Auth
 export type FirebaseUser = firebase.User
