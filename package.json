@@ -29,7 +29,7 @@
     "nuxt-property-decorator": "^2.9.1",
     "nuxt-purgecss": "^1.0.0",
     "save": "^2.4.0",
-    "vuex-persistedstate": "^4.0.0-beta.3"
+    "vuex-persistedstate": "^4.0.0"
   },
   "devDependencies": {
     "@nuxt/types": "^2.15.7",
