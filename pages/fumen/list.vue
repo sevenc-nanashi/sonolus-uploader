@@ -229,6 +229,10 @@ export default class FumenList extends Vue {
 
   @Watch('page')
   changePage () {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
     this.resetLevelList()
   }
 
