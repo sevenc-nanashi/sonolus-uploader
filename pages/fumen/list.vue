@@ -20,6 +20,7 @@
               label="Sort"
               dense
               return-object
+              disabled
             />
           </v-col>
           <v-col cols="6" lg="3">
@@ -31,6 +32,7 @@
               label="Difficulty"
               dense
               return-object
+              disabled
             />
           </v-col>
           <v-col cols="6" lg="3">
@@ -42,6 +44,7 @@
               label="Genre"
               dense
               return-object
+              disabled
             />
           </v-col>
         </v-row>
@@ -140,9 +143,6 @@ export default class FumenList extends Vue {
       this.$levelsApi,
       this.page,
       this.keyword,
-      this.sortParam, this.sortOrderParam,
-      this.genreParam,
-      this.difficultyParam,
       undefined
     )
     this.levels = resp.items
@@ -151,6 +151,7 @@ export default class FumenList extends Vue {
 
   @Watch('keyword')
   changeKeyword () {
+    this.page = 1
     this.resetLevelList()
   }
 
