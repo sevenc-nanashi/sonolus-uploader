@@ -20,7 +20,7 @@
           size="100"
           tile
         >
-          <v-img :src="level.cover.url" />
+          <v-img :src="coverUrl" />
         </v-avatar>
       </v-badge>
       <div>
@@ -34,11 +34,13 @@
         />
         <v-card-subtitle class="display-6" v-text="level.author" />
       </div>
+      <!--
       <v-row v-if="!level.public" align="center" justify="end">
         <v-card-subtitle class="text-h5 is-centered">
           テスト中
         </v-card-subtitle>
       </v-row>
+      -->
     </div>
   </v-card>
 </template>
@@ -78,6 +80,10 @@ export default class Fumen extends Vue {
 
   get levelText () {
     return this.level?.rating ? 'Lv' + this.level.rating : 'Lv0'
+  }
+
+  get coverUrl () {
+    return this.$config.API_ENDPOINT + this.level?.cover?.url
   }
 }
 </script>

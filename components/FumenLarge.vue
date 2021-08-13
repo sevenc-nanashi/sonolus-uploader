@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-img
-      :src="level.cover.url"
+      :src="coverUrl"
       height="200px"
     />
     <v-card-title>
@@ -60,6 +60,10 @@ export default class FumenLarge extends Vue {
 
   get levelText () {
     return this.level?.rating ? 'Lv' + this.level.rating : 'Lv0'
+  }
+
+  get coverUrl () {
+    return this.$config.API_ENDPOINT + this.level?.cover?.url
   }
 }
 </script>
