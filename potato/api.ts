@@ -576,25 +576,25 @@ export interface Level {
      * @type {string}
      * @memberof Level
      */
-    name?: string;
+    name: string;
     /**
      * Reserved for future update. current default is 1.
      * @type {number}
      * @memberof Level
      */
-    version?: number;
+    version: number;
     /**
      * Difficulty of the level
      * @type {number}
      * @memberof Level
      */
-    rating?: number;
+    rating: number;
     /**
-     * 
-     * @type {Engine}
+     * Just a name of engine (Sonolus-express finds the engine from db)
+     * @type {string}
      * @memberof Level
      */
-    engine?: Engine;
+    engine: string;
     /**
      * 
      * @type {LevelUseSkin}
@@ -620,47 +620,47 @@ export interface Level {
      */
     useParticle?: LevelUseParticle;
     /**
-     * base title of this content
-     * @type {string}
+     * 
+     * @type {LocalizationText}
      * @memberof Level
      */
-    title?: string;
+    title: LocalizationText;
     /**
-     * artist names of original music
-     * @type {string}
+     * 
+     * @type {LocalizationText}
      * @memberof Level
      */
-    artists?: string;
+    artists: LocalizationText;
     /**
-     * author of this content
-     * @type {string}
+     * 
+     * @type {LocalizationText}
      * @memberof Level
      */
-    author?: string;
+    author: LocalizationText;
     /**
      * 
      * @type {SonolusResourceLocator}
      * @memberof Level
      */
-    cover?: SonolusResourceLocator;
+    cover: SonolusResourceLocator;
     /**
      * 
      * @type {SonolusResourceLocator}
      * @memberof Level
      */
-    bgm?: SonolusResourceLocator;
+    bgm: SonolusResourceLocator;
     /**
      * 
      * @type {SonolusResourceLocator}
      * @memberof Level
      */
-    data?: SonolusResourceLocator;
+    data: SonolusResourceLocator;
     /**
      * 独自要素: 楽曲のジャンル
      * @type {string}
      * @memberof Level
      */
-    genre?: LevelGenreEnum;
+    genre: string;
     /**
      * 独自要素: 楽曲が全体公開かどうか
      * @type {boolean}
@@ -692,24 +692,36 @@ export interface Level {
      */
     updatedTime?: number;
     /**
-     * 独自要素: サイト内および譜面情報欄に表示される説明文
+     * 
+     * @type {LocalizationText}
+     * @memberof Level
+     */
+    description: LocalizationText;
+    /**
+     * 独自要素: サムネのハッシュ値(DBを兼ねるため)
      * @type {string}
      * @memberof Level
      */
-    description?: string;
+    coverHash?: string;
+    /**
+     * 独自要素: データのハッシュ(DBを兼ねるため)
+     * @type {string}
+     * @memberof Level
+     */
+    dataHash?: string;
+    /**
+     * 独自要素: BGMのハッシュ(DBを兼ねるため)
+     * @type {string}
+     * @memberof Level
+     */
+    bgmHash?: string;
+    /**
+     * 独自要素: プレイされた回数
+     * @type {number}
+     * @memberof Level
+     */
+    playCount?: number;
 }
-
-/**
-    * @export
-    * @enum {string}
-    */
-export enum LevelGenreEnum {
-    General = 'general',
-    Jpop = 'jpop',
-    Anime = 'anime',
-    Vocaloid = 'vocaloid'
-}
-
 /**
  * 
  * @export
@@ -785,6 +797,55 @@ export interface LevelUseSkin {
      * @memberof LevelUseSkin
      */
     item?: Skin;
+}
+/**
+ * 
+ * @export
+ * @interface LocalizationText
+ */
+export interface LocalizationText {
+    /**
+     * Simplified Chinese
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    cn?: string;
+    /**
+     * TraditionalChinese
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    tw?: string;
+    /**
+     * Japanese
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    ja: string;
+    /**
+     * English
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    en?: string;
+    /**
+     * Korean
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    ko?: string;
+    /**
+     * Indonesian
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    id?: string;
+    /**
+     * Spanish
+     * @type {string}
+     * @memberof LocalizationText
+     */
+    es?: string;
 }
 /**
  * A particle provides particle effect elements to levels / It defines particle effect used for specific level https://github.com/NonSpicyBurrito/sonolus-wiki/wiki/Particle
@@ -1100,89 +1161,14 @@ export interface User {
 export const BackgroundsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 指定された背景情報をサーバーに登録します
-         * @summary Add background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addBackground: async (backgroundName: string, background?: Background, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'backgroundName' is not null or undefined
-            assertParamExists('addBackground', 'backgroundName', backgroundName)
-            const localVarPath = `/backgrounds/{backgroundName}`
-                .replace(`{${"backgroundName"}}`, encodeURIComponent(String(backgroundName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(background, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 指定された背景情報を編集します
-         * @summary Edit background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editBackground: async (backgroundName: string, background?: Background, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'backgroundName' is not null or undefined
-            assertParamExists('editBackground', 'backgroundName', backgroundName)
-            const localVarPath = `/backgrounds/{backgroundName}`
-                .replace(`{${"backgroundName"}}`, encodeURIComponent(String(backgroundName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(background, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified background info It will raise 404 if the background is not registered in this server
          * @summary Get background
          * @param {string} backgroundName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getBackground: async (backgroundName: string, options: any = {}): Promise<RequestArgs> => {
+        getBackground: async (backgroundName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'backgroundName' is not null or undefined
             assertParamExists('getBackground', 'backgroundName', backgroundName)
             const localVarPath = `/backgrounds/{backgroundName}`
@@ -1197,6 +1183,10 @@ export const BackgroundsApiAxiosParamCreator = function (configuration?: Configu
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -1265,38 +1255,15 @@ export const BackgroundsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = BackgroundsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 指定された背景情報をサーバーに登録します
-         * @summary Add background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addBackground(backgroundName: string, background?: Background, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addBackground(backgroundName, background, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 指定された背景情報を編集します
-         * @summary Edit background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editBackground(backgroundName: string, background?: Background, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editBackground(backgroundName, background, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified background info It will raise 404 if the background is not registered in this server
          * @summary Get background
          * @param {string} backgroundName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getBackground(backgroundName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getBackground(backgroundName, options);
+        async getBackground(backgroundName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBackground(backgroundName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1323,36 +1290,15 @@ export const BackgroundsApiFactory = function (configuration?: Configuration, ba
     const localVarFp = BackgroundsApiFp(configuration)
     return {
         /**
-         * 指定された背景情報をサーバーに登録します
-         * @summary Add background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addBackground(backgroundName: string, background?: Background, options?: any): AxiosPromise<void> {
-            return localVarFp.addBackground(backgroundName, background, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 指定された背景情報を編集します
-         * @summary Edit background
-         * @param {string} backgroundName 
-         * @param {Background} [background] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editBackground(backgroundName: string, background?: Background, options?: any): AxiosPromise<void> {
-            return localVarFp.editBackground(backgroundName, background, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified background info It will raise 404 if the background is not registered in this server
          * @summary Get background
          * @param {string} backgroundName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getBackground(backgroundName: string, options?: any): AxiosPromise<GetBackgroundResponse> {
-            return localVarFp.getBackground(backgroundName, options).then((request) => request(axios, basePath));
+        getBackground(backgroundName: string, localization?: string, options?: any): AxiosPromise<GetBackgroundResponse> {
+            return localVarFp.getBackground(backgroundName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of background infos registered in this server Also it can search using query params
@@ -1377,41 +1323,16 @@ export const BackgroundsApiFactory = function (configuration?: Configuration, ba
  */
 export class BackgroundsApi extends BaseAPI {
     /**
-     * 指定された背景情報をサーバーに登録します
-     * @summary Add background
-     * @param {string} backgroundName 
-     * @param {Background} [background] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BackgroundsApi
-     */
-    public addBackground(backgroundName: string, background?: Background, options?: any) {
-        return BackgroundsApiFp(this.configuration).addBackground(backgroundName, background, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 指定された背景情報を編集します
-     * @summary Edit background
-     * @param {string} backgroundName 
-     * @param {Background} [background] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof BackgroundsApi
-     */
-    public editBackground(backgroundName: string, background?: Background, options?: any) {
-        return BackgroundsApiFp(this.configuration).editBackground(backgroundName, background, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified background info It will raise 404 if the background is not registered in this server
      * @summary Get background
      * @param {string} backgroundName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BackgroundsApi
      */
-    public getBackground(backgroundName: string, options?: any) {
-        return BackgroundsApiFp(this.configuration).getBackground(backgroundName, options).then((request) => request(this.axios, this.basePath));
+    public getBackground(backgroundName: string, localization?: string, options?: any) {
+        return BackgroundsApiFp(this.configuration).getBackground(backgroundName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1437,89 +1358,14 @@ export class BackgroundsApi extends BaseAPI {
 export const EffectsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 指定されたeffectをサーバーに登録します
-         * @summary Add effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addEffect: async (effectName: string, effect?: Effect, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'effectName' is not null or undefined
-            assertParamExists('addEffect', 'effectName', effectName)
-            const localVarPath = `/effects/{effectName}`
-                .replace(`{${"effectName"}}`, encodeURIComponent(String(effectName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(effect, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 指定されたeffectを編集します
-         * @summary Edit effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editEffect: async (effectName: string, effect?: Effect, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'effectName' is not null or undefined
-            assertParamExists('editEffect', 'effectName', effectName)
-            const localVarPath = `/effects/{effectName}`
-                .replace(`{${"effectName"}}`, encodeURIComponent(String(effectName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(effect, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified effect info It will raise 404 if the effect is not registered in this server
          * @summary Get effect
          * @param {string} effectName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEffect: async (effectName: string, options: any = {}): Promise<RequestArgs> => {
+        getEffect: async (effectName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'effectName' is not null or undefined
             assertParamExists('getEffect', 'effectName', effectName)
             const localVarPath = `/effects/{effectName}`
@@ -1534,6 +1380,10 @@ export const EffectsApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -1602,38 +1452,15 @@ export const EffectsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = EffectsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 指定されたeffectをサーバーに登録します
-         * @summary Add effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addEffect(effectName: string, effect?: Effect, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addEffect(effectName, effect, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 指定されたeffectを編集します
-         * @summary Edit effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editEffect(effectName: string, effect?: Effect, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editEffect(effectName, effect, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified effect info It will raise 404 if the effect is not registered in this server
          * @summary Get effect
          * @param {string} effectName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEffect(effectName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEffect(effectName, options);
+        async getEffect(effectName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEffect(effectName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1660,36 +1487,15 @@ export const EffectsApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = EffectsApiFp(configuration)
     return {
         /**
-         * 指定されたeffectをサーバーに登録します
-         * @summary Add effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addEffect(effectName: string, effect?: Effect, options?: any): AxiosPromise<void> {
-            return localVarFp.addEffect(effectName, effect, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 指定されたeffectを編集します
-         * @summary Edit effect
-         * @param {string} effectName 
-         * @param {Effect} [effect] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editEffect(effectName: string, effect?: Effect, options?: any): AxiosPromise<void> {
-            return localVarFp.editEffect(effectName, effect, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified effect info It will raise 404 if the effect is not registered in this server
          * @summary Get effect
          * @param {string} effectName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEffect(effectName: string, options?: any): AxiosPromise<GetEffectResponse> {
-            return localVarFp.getEffect(effectName, options).then((request) => request(axios, basePath));
+        getEffect(effectName: string, localization?: string, options?: any): AxiosPromise<GetEffectResponse> {
+            return localVarFp.getEffect(effectName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of effect infos registered in this server Also it can search using query params
@@ -1714,41 +1520,16 @@ export const EffectsApiFactory = function (configuration?: Configuration, basePa
  */
 export class EffectsApi extends BaseAPI {
     /**
-     * 指定されたeffectをサーバーに登録します
-     * @summary Add effect
-     * @param {string} effectName 
-     * @param {Effect} [effect] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EffectsApi
-     */
-    public addEffect(effectName: string, effect?: Effect, options?: any) {
-        return EffectsApiFp(this.configuration).addEffect(effectName, effect, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 指定されたeffectを編集します
-     * @summary Edit effect
-     * @param {string} effectName 
-     * @param {Effect} [effect] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EffectsApi
-     */
-    public editEffect(effectName: string, effect?: Effect, options?: any) {
-        return EffectsApiFp(this.configuration).editEffect(effectName, effect, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified effect info It will raise 404 if the effect is not registered in this server
      * @summary Get effect
      * @param {string} effectName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EffectsApi
      */
-    public getEffect(effectName: string, options?: any) {
-        return EffectsApiFp(this.configuration).getEffect(effectName, options).then((request) => request(this.axios, this.basePath));
+    public getEffect(effectName: string, localization?: string, options?: any) {
+        return EffectsApiFp(this.configuration).getEffect(effectName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1774,89 +1555,14 @@ export class EffectsApi extends BaseAPI {
 export const EnginesApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 指定されたゲームエンジンをサーバーに登録します
-         * @summary Add engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addEngine: async (engineName: string, engine?: Engine, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'engineName' is not null or undefined
-            assertParamExists('addEngine', 'engineName', engineName)
-            const localVarPath = `/engines/{engineName}`
-                .replace(`{${"engineName"}}`, encodeURIComponent(String(engineName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(engine, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 指定されたengineを編集します
-         * @summary Edit engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editEngine: async (engineName: string, engine?: Engine, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'engineName' is not null or undefined
-            assertParamExists('editEngine', 'engineName', engineName)
-            const localVarPath = `/engines/{engineName}`
-                .replace(`{${"engineName"}}`, encodeURIComponent(String(engineName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(engine, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified engine info It will raise 404 if the engine is not registered in this server
          * @summary Get engine
          * @param {string} engineName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEngine: async (engineName: string, options: any = {}): Promise<RequestArgs> => {
+        getEngine: async (engineName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'engineName' is not null or undefined
             assertParamExists('getEngine', 'engineName', engineName)
             const localVarPath = `/engines/{engineName}`
@@ -1871,6 +1577,10 @@ export const EnginesApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -1939,38 +1649,15 @@ export const EnginesApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = EnginesApiAxiosParamCreator(configuration)
     return {
         /**
-         * 指定されたゲームエンジンをサーバーに登録します
-         * @summary Add engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addEngine(engineName: string, engine?: Engine, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addEngine(engineName, engine, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 指定されたengineを編集します
-         * @summary Edit engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editEngine(engineName: string, engine?: Engine, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editEngine(engineName, engine, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified engine info It will raise 404 if the engine is not registered in this server
          * @summary Get engine
          * @param {string} engineName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getEngine(engineName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEngine(engineName, options);
+        async getEngine(engineName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEngine(engineName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1997,36 +1684,15 @@ export const EnginesApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = EnginesApiFp(configuration)
     return {
         /**
-         * 指定されたゲームエンジンをサーバーに登録します
-         * @summary Add engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addEngine(engineName: string, engine?: Engine, options?: any): AxiosPromise<void> {
-            return localVarFp.addEngine(engineName, engine, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 指定されたengineを編集します
-         * @summary Edit engine
-         * @param {string} engineName 
-         * @param {Engine} [engine] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editEngine(engineName: string, engine?: Engine, options?: any): AxiosPromise<void> {
-            return localVarFp.editEngine(engineName, engine, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified engine info It will raise 404 if the engine is not registered in this server
          * @summary Get engine
          * @param {string} engineName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getEngine(engineName: string, options?: any): AxiosPromise<GetEngineResponse> {
-            return localVarFp.getEngine(engineName, options).then((request) => request(axios, basePath));
+        getEngine(engineName: string, localization?: string, options?: any): AxiosPromise<GetEngineResponse> {
+            return localVarFp.getEngine(engineName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of engine infos registered in this server Also it can search using query params
@@ -2051,41 +1717,16 @@ export const EnginesApiFactory = function (configuration?: Configuration, basePa
  */
 export class EnginesApi extends BaseAPI {
     /**
-     * 指定されたゲームエンジンをサーバーに登録します
-     * @summary Add engine
-     * @param {string} engineName 
-     * @param {Engine} [engine] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EnginesApi
-     */
-    public addEngine(engineName: string, engine?: Engine, options?: any) {
-        return EnginesApiFp(this.configuration).addEngine(engineName, engine, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 指定されたengineを編集します
-     * @summary Edit engine
-     * @param {string} engineName 
-     * @param {Engine} [engine] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof EnginesApi
-     */
-    public editEngine(engineName: string, engine?: Engine, options?: any) {
-        return EnginesApiFp(this.configuration).editEngine(engineName, engine, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified engine info It will raise 404 if the engine is not registered in this server
      * @summary Get engine
      * @param {string} engineName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EnginesApi
      */
-    public getEngine(engineName: string, options?: any) {
-        return EnginesApiFp(this.configuration).getEngine(engineName, options).then((request) => request(this.axios, this.basePath));
+    public getEngine(engineName: string, localization?: string, options?: any) {
+        return EnginesApiFp(this.configuration).getEngine(engineName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2111,46 +1752,13 @@ export class EnginesApi extends BaseAPI {
 export const InfoApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Sonolusのサーバー情報欄に表示されるデータを変更します (表示したい情報をまとめてここに投げること)
-         * @summary Edit server info
-         * @param {ServerInfo} [serverInfo] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editInfo: async (serverInfo?: ServerInfo, options: any = {}): Promise<RequestArgs> => {
-            const localVarPath = `/info`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(serverInfo, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns small list of all infos registered in this server (It should be trimed if the server has too many items)
          * @summary Get server info
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getServerInfo: async (options: any = {}): Promise<RequestArgs> => {
+        getServerInfo: async (localization?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/info`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2162,6 +1770,10 @@ export const InfoApiAxiosParamCreator = function (configuration?: Configuration)
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -2185,24 +1797,14 @@ export const InfoApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = InfoApiAxiosParamCreator(configuration)
     return {
         /**
-         * Sonolusのサーバー情報欄に表示されるデータを変更します (表示したい情報をまとめてここに投げること)
-         * @summary Edit server info
-         * @param {ServerInfo} [serverInfo] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editInfo(serverInfo?: ServerInfo, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editInfo(serverInfo, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns small list of all infos registered in this server (It should be trimed if the server has too many items)
          * @summary Get server info
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getServerInfo(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getServerInfo(options);
+        async getServerInfo(localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getServerInfo(localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -2216,23 +1818,14 @@ export const InfoApiFactory = function (configuration?: Configuration, basePath?
     const localVarFp = InfoApiFp(configuration)
     return {
         /**
-         * Sonolusのサーバー情報欄に表示されるデータを変更します (表示したい情報をまとめてここに投げること)
-         * @summary Edit server info
-         * @param {ServerInfo} [serverInfo] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editInfo(serverInfo?: ServerInfo, options?: any): AxiosPromise<void> {
-            return localVarFp.editInfo(serverInfo, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns small list of all infos registered in this server (It should be trimed if the server has too many items)
          * @summary Get server info
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getServerInfo(options?: any): AxiosPromise<ServerInfo> {
-            return localVarFp.getServerInfo(options).then((request) => request(axios, basePath));
+        getServerInfo(localization?: string, options?: any): AxiosPromise<ServerInfo> {
+            return localVarFp.getServerInfo(localization, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2245,26 +1838,15 @@ export const InfoApiFactory = function (configuration?: Configuration, basePath?
  */
 export class InfoApi extends BaseAPI {
     /**
-     * Sonolusのサーバー情報欄に表示されるデータを変更します (表示したい情報をまとめてここに投げること)
-     * @summary Edit server info
-     * @param {ServerInfo} [serverInfo] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof InfoApi
-     */
-    public editInfo(serverInfo?: ServerInfo, options?: any) {
-        return InfoApiFp(this.configuration).editInfo(serverInfo, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns small list of all infos registered in this server (It should be trimed if the server has too many items)
      * @summary Get server info
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof InfoApi
      */
-    public getServerInfo(options?: any) {
-        return InfoApiFp(this.configuration).getServerInfo(options).then((request) => request(this.axios, this.basePath));
+    public getServerInfo(localization?: string, options?: any) {
+        return InfoApiFp(this.configuration).getServerInfo(localization, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2298,6 +1880,10 @@ export const LevelsApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -2337,6 +1923,10 @@ export const LevelsApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
 
     
             localVarHeaderParameter['Content-Type'] = 'application/json';
@@ -2355,10 +1945,11 @@ export const LevelsApiAxiosParamCreator = function (configuration?: Configuratio
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get level
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLevel: async (levelName: string, options: any = {}): Promise<RequestArgs> => {
+        getLevel: async (levelName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'levelName' is not null or undefined
             assertParamExists('getLevel', 'levelName', levelName)
             const localVarPath = `/levels/{levelName}`
@@ -2373,6 +1964,10 @@ export const LevelsApiAxiosParamCreator = function (configuration?: Configuratio
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -2468,11 +2063,12 @@ export const LevelsApiFp = function(configuration?: Configuration) {
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get level
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLevel(levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLevel(levelName, options);
+        async getLevel(levelName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLevel(levelName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2524,11 +2120,12 @@ export const LevelsApiFactory = function (configuration?: Configuration, basePat
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get level
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLevel(levelName: string, options?: any): AxiosPromise<GetLevelResponse> {
-            return localVarFp.getLevel(levelName, options).then((request) => request(axios, basePath));
+        getLevel(levelName: string, localization?: string, options?: any): AxiosPromise<GetLevelResponse> {
+            return localVarFp.getLevel(levelName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of level infos registered in this server Also it can search using query params
@@ -2582,12 +2179,13 @@ export class LevelsApi extends BaseAPI {
      * It returns specified level info It will raise 404 if the level is not registered in this server
      * @summary Get level
      * @param {string} levelName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof LevelsApi
      */
-    public getLevel(levelName: string, options?: any) {
-        return LevelsApiFp(this.configuration).getLevel(levelName, options).then((request) => request(this.axios, this.basePath));
+    public getLevel(levelName: string, localization?: string, options?: any) {
+        return LevelsApiFp(this.configuration).getLevel(levelName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2613,89 +2211,14 @@ export class LevelsApi extends BaseAPI {
 export const ParticlesApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 指定されたパーティクル情報をサーバーに登録します
-         * @summary Add particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addParticle: async (particleName: string, particle?: Particle, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'particleName' is not null or undefined
-            assertParamExists('addParticle', 'particleName', particleName)
-            const localVarPath = `/particles/{particleName}`
-                .replace(`{${"particleName"}}`, encodeURIComponent(String(particleName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(particle, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 指定したparticleを編集します
-         * @summary Edit particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editParticle: async (particleName: string, particle?: Particle, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'particleName' is not null or undefined
-            assertParamExists('editParticle', 'particleName', particleName)
-            const localVarPath = `/particles/{particleName}`
-                .replace(`{${"particleName"}}`, encodeURIComponent(String(particleName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(particle, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified particle info It will raise 404 if the particle is not registered in this server
          * @summary Get particle
          * @param {string} particleName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getParticle: async (particleName: string, options: any = {}): Promise<RequestArgs> => {
+        getParticle: async (particleName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'particleName' is not null or undefined
             assertParamExists('getParticle', 'particleName', particleName)
             const localVarPath = `/particles/{particleName}`
@@ -2710,6 +2233,10 @@ export const ParticlesApiAxiosParamCreator = function (configuration?: Configura
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -2778,38 +2305,15 @@ export const ParticlesApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = ParticlesApiAxiosParamCreator(configuration)
     return {
         /**
-         * 指定されたパーティクル情報をサーバーに登録します
-         * @summary Add particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addParticle(particleName: string, particle?: Particle, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addParticle(particleName, particle, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 指定したparticleを編集します
-         * @summary Edit particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editParticle(particleName: string, particle?: Particle, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editParticle(particleName, particle, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified particle info It will raise 404 if the particle is not registered in this server
          * @summary Get particle
          * @param {string} particleName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getParticle(particleName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getParticle(particleName, options);
+        async getParticle(particleName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getParticle(particleName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -2836,36 +2340,15 @@ export const ParticlesApiFactory = function (configuration?: Configuration, base
     const localVarFp = ParticlesApiFp(configuration)
     return {
         /**
-         * 指定されたパーティクル情報をサーバーに登録します
-         * @summary Add particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addParticle(particleName: string, particle?: Particle, options?: any): AxiosPromise<void> {
-            return localVarFp.addParticle(particleName, particle, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 指定したparticleを編集します
-         * @summary Edit particle
-         * @param {string} particleName 
-         * @param {Particle} [particle] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editParticle(particleName: string, particle?: Particle, options?: any): AxiosPromise<void> {
-            return localVarFp.editParticle(particleName, particle, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified particle info It will raise 404 if the particle is not registered in this server
          * @summary Get particle
          * @param {string} particleName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getParticle(particleName: string, options?: any): AxiosPromise<GetParticleResponse> {
-            return localVarFp.getParticle(particleName, options).then((request) => request(axios, basePath));
+        getParticle(particleName: string, localization?: string, options?: any): AxiosPromise<GetParticleResponse> {
+            return localVarFp.getParticle(particleName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of particle infos registered in this server Also it can search using query params
@@ -2890,41 +2373,16 @@ export const ParticlesApiFactory = function (configuration?: Configuration, base
  */
 export class ParticlesApi extends BaseAPI {
     /**
-     * 指定されたパーティクル情報をサーバーに登録します
-     * @summary Add particle
-     * @param {string} particleName 
-     * @param {Particle} [particle] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ParticlesApi
-     */
-    public addParticle(particleName: string, particle?: Particle, options?: any) {
-        return ParticlesApiFp(this.configuration).addParticle(particleName, particle, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 指定したparticleを編集します
-     * @summary Edit particle
-     * @param {string} particleName 
-     * @param {Particle} [particle] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ParticlesApi
-     */
-    public editParticle(particleName: string, particle?: Particle, options?: any) {
-        return ParticlesApiFp(this.configuration).editParticle(particleName, particle, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified particle info It will raise 404 if the particle is not registered in this server
      * @summary Get particle
      * @param {string} particleName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ParticlesApi
      */
-    public getParticle(particleName: string, options?: any) {
-        return ParticlesApiFp(this.configuration).getParticle(particleName, options).then((request) => request(this.axios, this.basePath));
+    public getParticle(particleName: string, localization?: string, options?: any) {
+        return ParticlesApiFp(this.configuration).getParticle(particleName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2944,95 +2402,4788 @@ export class ParticlesApi extends BaseAPI {
 
 
 /**
+ * RepositoryApi - axios parameter creator
+ * @export
+ */
+export const RepositoryApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundConfiguration: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryBackgroundConfiguration', 'resourceName', resourceName)
+            const localVarPath = `/repository/BackgroundConfiguration/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryBackgroundData', 'resourceName', resourceName)
+            const localVarPath = `/repository/BackgroundData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundImage: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryBackgroundImage', 'resourceName', resourceName)
+            const localVarPath = `/repository/BackgroundImage/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundThumbnail: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryBackgroundThumbnail', 'resourceName', resourceName)
+            const localVarPath = `/repository/BackgroundThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectClip: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEffectClip', 'resourceName', resourceName)
+            const localVarPath = `/repository/EffectClip/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It returnes specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEffectData', 'resourceName', resourceName)
+            const localVarPath = `/repository/EffectData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectThumbnail: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEffectThumbnail', 'resourceName', resourceName)
+            const localVarPath = `/repository/EffectThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineConfiguration: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEngineConfiguration', 'resourceName', resourceName)
+            const localVarPath = `/repository/EngineConfiguration/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEngineData', 'resourceName', resourceName)
+            const localVarPath = `/repository/EngineData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineThumbnail: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryEngineThumbnail', 'resourceName', resourceName)
+            const localVarPath = `/repository/EngineThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelBgm: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryLevelBgm', 'resourceName', resourceName)
+            const localVarPath = `/repository/LevelBgm/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelCover: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryLevelCover', 'resourceName', resourceName)
+            const localVarPath = `/repository/LevelCover/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryLevelData', 'resourceName', resourceName)
+            const localVarPath = `/repository/LevelData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryParticleData', 'resourceName', resourceName)
+            const localVarPath = `/repository/ParticleData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleTexture: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryParticleTexture', 'resourceName', resourceName)
+            const localVarPath = `/repository/ParticleTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleThumbnail: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositoryParticleThumbnail', 'resourceName', resourceName)
+            const localVarPath = `/repository/ParticleThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelBgm: async (levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getRepositoryPathLevelBgm', 'levelName', levelName)
+            const localVarPath = `/repository/{levelName}/bgm.mp3`
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelCover: async (levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getRepositoryPathLevelCover', 'levelName', levelName)
+            const localVarPath = `/repository/{levelName}/cover.png`
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelData: async (levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getRepositoryPathLevelData', 'levelName', levelName)
+            const localVarPath = `/repository/{levelName}/data.gz`
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinData: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositorySkinData', 'resourceName', resourceName)
+            const localVarPath = `/repository/SkinData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinTexture: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositorySkinTexture', 'resourceName', resourceName)
+            const localVarPath = `/repository/SkinTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinThumbnail: async (resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getRepositorySkinThumbnail', 'resourceName', resourceName)
+            const localVarPath = `/repository/SkinThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundConfiguration: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundConfiguration', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundConfiguration', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/BackgroundConfiguration/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/BackgroundData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundImage: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundImage', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundImage', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/BackgroundImage/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundThumbnail: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryBackgroundThumbnail', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/BackgroundThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectClip: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEffectClip', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEffectClip', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EffectClip/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEffectData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEffectData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EffectData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectThumbnail: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEffectThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEffectThumbnail', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EffectThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineConfiguration: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEngineConfiguration', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEngineConfiguration', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EngineConfiguration/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEngineData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEngineData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EngineData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineThumbnail: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryEngineThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryEngineThumbnail', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/EngineThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelBgm: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryLevelBgm', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryLevelBgm', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/LevelBgm/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelCover: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryLevelCover', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryLevelCover', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/LevelCover/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryLevelData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryLevelData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/LevelData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryParticleData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryParticleData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/ParticleData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleTexture: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryParticleTexture', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryParticleTexture', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/ParticleTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleThumbnail: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositoryParticleThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryParticleThumbnail', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/ParticleThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelBgm: async (testId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelBgm', 'testId', testId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelBgm', 'levelName', levelName)
+            const localVarPath = `/tests/{testId}/repository/{levelName}/bgm.mp3`
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelCover: async (testId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelCover', 'testId', testId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelCover', 'levelName', levelName)
+            const localVarPath = `/tests/{testId}/repository/{levelName}/cover.png`
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelData: async (testId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelData', 'testId', testId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getTestRepositoryPathLevelData', 'levelName', levelName)
+            const localVarPath = `/tests/{testId}/repository/{levelName}/data.gz`
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinData: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositorySkinData', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositorySkinData', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/SkinData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinTexture: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositorySkinTexture', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositorySkinTexture', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/SkinTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinThumbnail: async (resourceName: string, testId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getTestRepositorySkinThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'testId' is not null or undefined
+            assertParamExists('getTestRepositorySkinThumbnail', 'testId', testId)
+            const localVarPath = `/tests/{testId}/repository/SkinThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} userId 
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundConfiguration: async (userId: string, resourceName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundConfiguration', 'userId', userId)
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundConfiguration', 'resourceName', resourceName)
+            const localVarPath = `/users/{userId}/repository/BackgroundConfiguration/{resourceName}`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/BackgroundData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundImage: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundImage', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundImage', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/BackgroundImage/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundThumbnail: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryBackgroundThumbnail', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/BackgroundThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectClip: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEffectClip', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEffectClip', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EffectClip/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEffectData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEffectData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EffectData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectThumbnail: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEffectThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEffectThumbnail', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EffectThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineConfiguration: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEngineConfiguration', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEngineConfiguration', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EngineConfiguration/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEngineData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEngineData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EngineData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineThumbnail: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryEngineThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryEngineThumbnail', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/EngineThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelBgm: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryLevelBgm', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryLevelBgm', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/LevelBgm/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelCover: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryLevelCover', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryLevelCover', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/LevelCover/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryLevelData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryLevelData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/LevelData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryParticleData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryParticleData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/ParticleData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleTexture: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryParticleTexture', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryParticleTexture', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/ParticleTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleThumbnail: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositoryParticleThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryParticleThumbnail', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/ParticleThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelBgm: async (userId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelBgm', 'userId', userId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelBgm', 'levelName', levelName)
+            const localVarPath = `/users/{userId}/repository/{levelName}/bgm.mp3`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelCover: async (userId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelCover', 'userId', userId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelCover', 'levelName', levelName)
+            const localVarPath = `/users/{userId}/repository/{levelName}/cover.png`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelData: async (userId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelData', 'userId', userId)
+            // verify required parameter 'levelName' is not null or undefined
+            assertParamExists('getUserRepositoryPathLevelData', 'levelName', levelName)
+            const localVarPath = `/users/{userId}/repository/{levelName}/data.gz`
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
+                .replace(`{${"levelName"}}`, encodeURIComponent(String(levelName)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinData: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositorySkinData', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositorySkinData', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/SkinData/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinTexture: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositorySkinTexture', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositorySkinTexture', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/SkinTexture/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinThumbnail: async (resourceName: string, userId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'resourceName' is not null or undefined
+            assertParamExists('getUserRepositorySkinThumbnail', 'resourceName', resourceName)
+            // verify required parameter 'userId' is not null or undefined
+            assertParamExists('getUserRepositorySkinThumbnail', 'userId', userId)
+            const localVarPath = `/users/{userId}/repository/SkinThumbnail/{resourceName}`
+                .replace(`{${"resourceName"}}`, encodeURIComponent(String(resourceName)))
+                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RepositoryApi - functional programming interface
+ * @export
+ */
+export const RepositoryApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = RepositoryApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryBackgroundConfiguration(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryBackgroundConfiguration(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryBackgroundData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryBackgroundData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryBackgroundImage(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryBackgroundImage(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryBackgroundThumbnail(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryBackgroundThumbnail(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEffectClip(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEffectClip(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It returnes specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEffectData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEffectData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEffectThumbnail(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEffectThumbnail(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEngineConfiguration(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEngineConfiguration(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEngineData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEngineData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryEngineThumbnail(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryEngineThumbnail(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryLevelBgm(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryLevelBgm(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryLevelCover(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryLevelCover(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryLevelData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryLevelData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryParticleData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryParticleData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryParticleTexture(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryParticleTexture(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryParticleThumbnail(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryParticleThumbnail(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryPathLevelBgm(levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryPathLevelBgm(levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryPathLevelCover(levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryPathLevelCover(levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositoryPathLevelData(levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositoryPathLevelData(levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositorySkinData(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositorySkinData(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositorySkinTexture(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositorySkinTexture(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getRepositorySkinThumbnail(resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getRepositorySkinThumbnail(resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryBackgroundConfiguration(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryBackgroundConfiguration(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryBackgroundData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryBackgroundData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryBackgroundImage(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryBackgroundImage(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryBackgroundThumbnail(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryBackgroundThumbnail(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEffectClip(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEffectClip(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEffectData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEffectData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEffectThumbnail(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEffectThumbnail(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEngineConfiguration(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEngineConfiguration(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEngineData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEngineData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryEngineThumbnail(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryEngineThumbnail(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryLevelBgm(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryLevelBgm(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryLevelCover(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryLevelCover(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryLevelData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryLevelData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryParticleData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryParticleData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryParticleTexture(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryParticleTexture(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryParticleThumbnail(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryParticleThumbnail(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryPathLevelBgm(testId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryPathLevelBgm(testId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryPathLevelCover(testId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryPathLevelCover(testId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositoryPathLevelData(testId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositoryPathLevelData(testId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositorySkinData(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositorySkinData(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositorySkinTexture(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositorySkinTexture(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTestRepositorySkinThumbnail(resourceName: string, testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestRepositorySkinThumbnail(resourceName, testId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} userId 
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryBackgroundConfiguration(userId: string, resourceName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryBackgroundConfiguration(userId, resourceName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryBackgroundData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryBackgroundData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryBackgroundImage(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryBackgroundImage(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryBackgroundThumbnail(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryBackgroundThumbnail(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEffectClip(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEffectClip(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEffectData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEffectData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEffectThumbnail(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEffectThumbnail(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEngineConfiguration(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEngineConfiguration(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEngineData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEngineData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryEngineThumbnail(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryEngineThumbnail(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryLevelBgm(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryLevelBgm(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryLevelCover(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryLevelCover(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryLevelData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryLevelData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryParticleData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryParticleData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryParticleTexture(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryParticleTexture(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryParticleThumbnail(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryParticleThumbnail(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryPathLevelBgm(userId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryPathLevelBgm(userId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryPathLevelCover(userId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryPathLevelCover(userId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositoryPathLevelData(userId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositoryPathLevelData(userId, levelName, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositorySkinData(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositorySkinData(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositorySkinTexture(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositorySkinTexture(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserRepositorySkinThumbnail(resourceName: string, userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserRepositorySkinThumbnail(resourceName, userId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * RepositoryApi - factory interface
+ * @export
+ */
+export const RepositoryApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = RepositoryApiFp(configuration)
+    return {
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundConfiguration(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryBackgroundConfiguration(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryBackgroundData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundImage(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryBackgroundImage(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryBackgroundThumbnail(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryBackgroundThumbnail(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectClip(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEffectClip(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It returnes specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEffectData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEffectThumbnail(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEffectThumbnail(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineConfiguration(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEngineConfiguration(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEngineData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryEngineThumbnail(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryEngineThumbnail(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelBgm(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryLevelBgm(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelCover(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryLevelCover(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryLevelData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryLevelData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryParticleData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleTexture(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryParticleTexture(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryParticleThumbnail(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryParticleThumbnail(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelBgm(levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryPathLevelBgm(levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelCover(levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryPathLevelCover(levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositoryPathLevelData(levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositoryPathLevelData(levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinData(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositorySkinData(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinTexture(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositorySkinTexture(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getRepositorySkinThumbnail(resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getRepositorySkinThumbnail(resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundConfiguration(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryBackgroundConfiguration(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryBackgroundData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundImage(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryBackgroundImage(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryBackgroundThumbnail(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryBackgroundThumbnail(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectClip(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEffectClip(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEffectData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEffectThumbnail(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEffectThumbnail(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineConfiguration(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEngineConfiguration(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEngineData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryEngineThumbnail(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryEngineThumbnail(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelBgm(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryLevelBgm(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelCover(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryLevelCover(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryLevelData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryLevelData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryParticleData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleTexture(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryParticleTexture(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryParticleThumbnail(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryParticleThumbnail(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelBgm(testId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryPathLevelBgm(testId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelCover(testId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryPathLevelCover(testId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} testId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositoryPathLevelData(testId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositoryPathLevelData(testId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinData(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositorySkinData(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinTexture(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositorySkinTexture(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} testId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTestRepositorySkinThumbnail(resourceName: string, testId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getTestRepositorySkinThumbnail(resourceName, testId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundConfiguration
+         * @param {string} userId 
+         * @param {string} resourceName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundConfiguration(userId: string, resourceName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryBackgroundConfiguration(userId, resourceName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryBackgroundData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundImage
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundImage(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryBackgroundImage(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetBackgroundThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryBackgroundThumbnail(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryBackgroundThumbnail(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectClip
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectClip(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEffectClip(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEffectData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEffectThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEffectThumbnail(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEffectThumbnail(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineConfiguration
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineConfiguration(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEngineConfiguration(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEngineData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetEngineThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryEngineThumbnail(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryEngineThumbnail(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelBgm
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelBgm(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryLevelBgm(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelCover
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelCover(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryLevelCover(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetLevelData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryLevelData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryLevelData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryParticleData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleTexture(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryParticleTexture(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetParticleThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryParticleThumbnail(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryParticleThumbnail(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelBgm
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelBgm(userId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryPathLevelBgm(userId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelCover
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelCover(userId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryPathLevelCover(userId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary Get levelData
+         * @param {string} userId 
+         * @param {string} levelName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositoryPathLevelData(userId: string, levelName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositoryPathLevelData(userId, levelName, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinData
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinData(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositorySkinData(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinTexture
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinTexture(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositorySkinTexture(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * It return specified resource data.
+         * @summary GetSkinThumbnail
+         * @param {string} resourceName 
+         * @param {string} userId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserRepositorySkinThumbnail(resourceName: string, userId: string, options?: any): AxiosPromise<void> {
+            return localVarFp.getUserRepositorySkinThumbnail(resourceName, userId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * RepositoryApi - object-oriented interface
+ * @export
+ * @class RepositoryApi
+ * @extends {BaseAPI}
+ */
+export class RepositoryApi extends BaseAPI {
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundConfiguration
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryBackgroundConfiguration(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryBackgroundConfiguration(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryBackgroundData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryBackgroundData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundImage
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryBackgroundImage(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryBackgroundImage(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundThumbnail
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryBackgroundThumbnail(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryBackgroundThumbnail(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectClip
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEffectClip(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEffectClip(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It returnes specified resource data.
+     * @summary GetEffectData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEffectData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEffectData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectThumbnail
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEffectThumbnail(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEffectThumbnail(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineConfiguration
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEngineConfiguration(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEngineConfiguration(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEngineData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEngineData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineThumbnail
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryEngineThumbnail(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryEngineThumbnail(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelBgm
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryLevelBgm(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryLevelBgm(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelCover
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryLevelCover(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryLevelCover(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryLevelData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryLevelData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryParticleData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryParticleData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleTexture
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryParticleTexture(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryParticleTexture(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleThumbnail
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryParticleThumbnail(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryParticleThumbnail(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelBgm
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryPathLevelBgm(levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryPathLevelBgm(levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelCover
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryPathLevelCover(levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryPathLevelCover(levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelData
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositoryPathLevelData(levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositoryPathLevelData(levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinData
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositorySkinData(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositorySkinData(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinTexture
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositorySkinTexture(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositorySkinTexture(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinThumbnail
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getRepositorySkinThumbnail(resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getRepositorySkinThumbnail(resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundConfiguration
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryBackgroundConfiguration(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryBackgroundConfiguration(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryBackgroundData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryBackgroundData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundImage
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryBackgroundImage(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryBackgroundImage(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundThumbnail
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryBackgroundThumbnail(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryBackgroundThumbnail(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectClip
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEffectClip(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEffectClip(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEffectData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEffectData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectThumbnail
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEffectThumbnail(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEffectThumbnail(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineConfiguration
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEngineConfiguration(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEngineConfiguration(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEngineData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEngineData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineThumbnail
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryEngineThumbnail(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryEngineThumbnail(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelBgm
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryLevelBgm(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryLevelBgm(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelCover
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryLevelCover(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryLevelCover(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryLevelData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryLevelData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryParticleData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryParticleData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleTexture
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryParticleTexture(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryParticleTexture(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleThumbnail
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryParticleThumbnail(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryParticleThumbnail(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelBgm
+     * @param {string} testId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryPathLevelBgm(testId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryPathLevelBgm(testId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelCover
+     * @param {string} testId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryPathLevelCover(testId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryPathLevelCover(testId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelData
+     * @param {string} testId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositoryPathLevelData(testId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositoryPathLevelData(testId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinData
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositorySkinData(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositorySkinData(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinTexture
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositorySkinTexture(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositorySkinTexture(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinThumbnail
+     * @param {string} resourceName 
+     * @param {string} testId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getTestRepositorySkinThumbnail(resourceName: string, testId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getTestRepositorySkinThumbnail(resourceName, testId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundConfiguration
+     * @param {string} userId 
+     * @param {string} resourceName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryBackgroundConfiguration(userId: string, resourceName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryBackgroundConfiguration(userId, resourceName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryBackgroundData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryBackgroundData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundImage
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryBackgroundImage(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryBackgroundImage(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetBackgroundThumbnail
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryBackgroundThumbnail(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryBackgroundThumbnail(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectClip
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEffectClip(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEffectClip(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEffectData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEffectData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEffectThumbnail
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEffectThumbnail(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEffectThumbnail(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineConfiguration
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEngineConfiguration(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEngineConfiguration(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEngineData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEngineData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetEngineThumbnail
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryEngineThumbnail(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryEngineThumbnail(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelBgm
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryLevelBgm(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryLevelBgm(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelCover
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryLevelCover(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryLevelCover(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetLevelData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryLevelData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryLevelData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryParticleData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryParticleData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleTexture
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryParticleTexture(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryParticleTexture(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetParticleThumbnail
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryParticleThumbnail(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryParticleThumbnail(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelBgm
+     * @param {string} userId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryPathLevelBgm(userId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryPathLevelBgm(userId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelCover
+     * @param {string} userId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryPathLevelCover(userId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryPathLevelCover(userId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary Get levelData
+     * @param {string} userId 
+     * @param {string} levelName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositoryPathLevelData(userId: string, levelName: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositoryPathLevelData(userId, levelName, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinData
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositorySkinData(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositorySkinData(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinTexture
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositorySkinTexture(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositorySkinTexture(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * It return specified resource data.
+     * @summary GetSkinThumbnail
+     * @param {string} resourceName 
+     * @param {string} userId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RepositoryApi
+     */
+    public getUserRepositorySkinThumbnail(resourceName: string, userId: string, options?: any) {
+        return RepositoryApiFp(this.configuration).getUserRepositorySkinThumbnail(resourceName, userId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * SkinsApi - axios parameter creator
  * @export
  */
 export const SkinsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 指定されたスキン情報をサーバーに登録します
-         * @summary Add skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addSkin: async (skinName: string, skin?: Skin, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'skinName' is not null or undefined
-            assertParamExists('addSkin', 'skinName', skinName)
-            const localVarPath = `/skins/{skinName}`
-                .replace(`{${"skinName"}}`, encodeURIComponent(String(skinName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(skin, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 指定したskinを編集します
-         * @summary Edit skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editSkin: async (skinName: string, skin?: Skin, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'skinName' is not null or undefined
-            assertParamExists('editSkin', 'skinName', skinName)
-            const localVarPath = `/skins/{skinName}`
-                .replace(`{${"skinName"}}`, encodeURIComponent(String(skinName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(skin, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified skin info It will raise 404 if the skin is not registered in this server
          * @summary Get skin
          * @param {string} skinName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSkin: async (skinName: string, options: any = {}): Promise<RequestArgs> => {
+        getSkin: async (skinName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'skinName' is not null or undefined
             assertParamExists('getSkin', 'skinName', skinName)
             const localVarPath = `/skins/{skinName}`
@@ -3047,6 +7198,10 @@ export const SkinsApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -3115,38 +7270,15 @@ export const SkinsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = SkinsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 指定されたスキン情報をサーバーに登録します
-         * @summary Add skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addSkin(skinName: string, skin?: Skin, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addSkin(skinName, skin, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 指定したskinを編集します
-         * @summary Edit skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editSkin(skinName: string, skin?: Skin, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editSkin(skinName, skin, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified skin info It will raise 404 if the skin is not registered in this server
          * @summary Get skin
          * @param {string} skinName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getSkin(skinName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSkin(skinName, options);
+        async getSkin(skinName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSkin(skinName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -3173,36 +7305,15 @@ export const SkinsApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = SkinsApiFp(configuration)
     return {
         /**
-         * 指定されたスキン情報をサーバーに登録します
-         * @summary Add skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addSkin(skinName: string, skin?: Skin, options?: any): AxiosPromise<void> {
-            return localVarFp.addSkin(skinName, skin, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 指定したskinを編集します
-         * @summary Edit skin
-         * @param {string} skinName 
-         * @param {Skin} [skin] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editSkin(skinName: string, skin?: Skin, options?: any): AxiosPromise<void> {
-            return localVarFp.editSkin(skinName, skin, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified skin info It will raise 404 if the skin is not registered in this server
          * @summary Get skin
          * @param {string} skinName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getSkin(skinName: string, options?: any): AxiosPromise<GetSkinResponse> {
-            return localVarFp.getSkin(skinName, options).then((request) => request(axios, basePath));
+        getSkin(skinName: string, localization?: string, options?: any): AxiosPromise<GetSkinResponse> {
+            return localVarFp.getSkin(skinName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns list of skin infos registered in this server Also it can search using query params
@@ -3227,41 +7338,16 @@ export const SkinsApiFactory = function (configuration?: Configuration, basePath
  */
 export class SkinsApi extends BaseAPI {
     /**
-     * 指定されたスキン情報をサーバーに登録します
-     * @summary Add skin
-     * @param {string} skinName 
-     * @param {Skin} [skin] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SkinsApi
-     */
-    public addSkin(skinName: string, skin?: Skin, options?: any) {
-        return SkinsApiFp(this.configuration).addSkin(skinName, skin, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 指定したskinを編集します
-     * @summary Edit skin
-     * @param {string} skinName 
-     * @param {Skin} [skin] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof SkinsApi
-     */
-    public editSkin(skinName: string, skin?: Skin, options?: any) {
-        return SkinsApiFp(this.configuration).editSkin(skinName, skin, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified skin info It will raise 404 if the skin is not registered in this server
      * @summary Get skin
      * @param {string} skinName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof SkinsApi
      */
-    public getSkin(skinName: string, options?: any) {
-        return SkinsApiFp(this.configuration).getSkin(skinName, options).then((request) => request(this.axios, this.basePath));
+    public getSkin(skinName: string, localization?: string, options?: any) {
+        return SkinsApiFp(this.configuration).getSkin(skinName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -3287,128 +7373,15 @@ export class SkinsApi extends BaseAPI {
 export const TestsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get testing background
-         * @param {string} testId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getBackgroundTest: async (testId: string, backgroundName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getBackgroundTest', 'testId', testId)
-            // verify required parameter 'backgroundName' is not null or undefined
-            assertParamExists('getBackgroundTest', 'backgroundName', backgroundName)
-            const localVarPath = `/tests/{testId}/backgrounds/{backgroundName}`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
-                .replace(`{${"backgroundName"}}`, encodeURIComponent(String(backgroundName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get testing effect
-         * @param {string} testId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getEffectTest: async (testId: string, effectName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getEffectTest', 'testId', testId)
-            // verify required parameter 'effectName' is not null or undefined
-            assertParamExists('getEffectTest', 'effectName', effectName)
-            const localVarPath = `/tests/{testId}/effects/{effectName}`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
-                .replace(`{${"effectName"}}`, encodeURIComponent(String(effectName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get testing engine
-         * @param {string} testId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getEngineTest: async (testId: string, engineName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getEngineTest', 'testId', testId)
-            // verify required parameter 'engineName' is not null or undefined
-            assertParamExists('getEngineTest', 'engineName', engineName)
-            const localVarPath = `/tests/{testId}/engines/{engineName}`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
-                .replace(`{${"engineName"}}`, encodeURIComponent(String(engineName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get testing level
          * @param {string} testId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLevelTest: async (testId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+        getLevelTest: async (testId: string, levelName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'testId' is not null or undefined
             assertParamExists('getLevelTest', 'testId', testId)
             // verify required parameter 'levelName' is not null or undefined
@@ -3427,81 +7400,9 @@ export const TestsApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get testing particle
-         * @param {string} testId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getParticleTest: async (testId: string, particleName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getParticleTest', 'testId', testId)
-            // verify required parameter 'particleName' is not null or undefined
-            assertParamExists('getParticleTest', 'particleName', particleName)
-            const localVarPath = `/tests/{testId}/particles/{particleName}`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
-                .replace(`{${"particleName"}}`, encodeURIComponent(String(particleName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
             }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get testing skin
-         * @param {string} testId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getSkinTest: async (testId: string, skinName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getSkinTest', 'testId', testId)
-            // verify required parameter 'skinName' is not null or undefined
-            assertParamExists('getSkinTest', 'skinName', skinName)
-            const localVarPath = `/tests/{testId}/skins/{skinName}`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)))
-                .replace(`{${"skinName"}}`, encodeURIComponent(String(skinName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
 
 
     
@@ -3518,10 +7419,11 @@ export const TestsApiAxiosParamCreator = function (configuration?: Configuration
          * テスト個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} testId 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTestServerInfo: async (testId: string, options: any = {}): Promise<RequestArgs> => {
+        getTestServerInfo: async (testId: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'testId' is not null or undefined
             assertParamExists('getTestServerInfo', 'testId', testId)
             const localVarPath = `/tests/{testId}/info`
@@ -3537,151 +7439,8 @@ export const TestsApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get backgrounds for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsBackgrounds: async (testId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getTestsBackgrounds', 'testId', testId)
-            const localVarPath = `/tests/{testId}/backgrounds/list`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
             if (localization !== undefined) {
                 localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
-         * @summary Get effects for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsEffects: async (testId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getTestsEffects', 'testId', testId)
-            const localVarPath = `/tests/{testId}/effects/list`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
-         * @summary Get engines for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsEngines: async (testId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getTestsEngines', 'testId', testId)
-            const localVarPath = `/tests/{testId}/engines/list`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
             }
 
 
@@ -3744,104 +7503,6 @@ export const TestsApiAxiosParamCreator = function (configuration?: Configuration
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get particles for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsParticles: async (testId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getTestsParticles', 'testId', testId)
-            const localVarPath = `/tests/{testId}/particles/list`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
-         * @summary Get skins for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsSkins: async (testId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'testId' is not null or undefined
-            assertParamExists('getTestsSkins', 'testId', testId)
-            const localVarPath = `/tests/{testId}/skins/list`
-                .replace(`{${"testId"}}`, encodeURIComponent(String(testId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -3853,128 +7514,28 @@ export const TestsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = TestsApiAxiosParamCreator(configuration)
     return {
         /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get testing background
-         * @param {string} testId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getBackgroundTest(testId: string, backgroundName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getBackgroundTest(testId, backgroundName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get testing effect
-         * @param {string} testId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getEffectTest(testId: string, effectName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEffectTest(testId, effectName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get testing engine
-         * @param {string} testId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getEngineTest(testId: string, engineName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getEngineTest(testId, engineName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get testing level
          * @param {string} testId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getLevelTest(testId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getLevelTest(testId, levelName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get testing particle
-         * @param {string} testId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getParticleTest(testId: string, particleName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getParticleTest(testId, particleName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get testing skin
-         * @param {string} testId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getSkinTest(testId: string, skinName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getSkinTest(testId, skinName, options);
+        async getLevelTest(testId: string, levelName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getLevelTest(testId, levelName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * テスト個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} testId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getTestServerInfo(testId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestServerInfo(testId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get backgrounds for test
-         * @param {string} testId 
          * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getTestsBackgrounds(testId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsBackgrounds(testId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
-         * @summary Get effects for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getTestsEffects(testId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsEffects(testId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
-         * @summary Get engines for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getTestsEngines(testId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsEngines(testId, localization, page, keywords, options);
+        async getTestServerInfo(testId: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestServerInfo(testId, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -3991,34 +7552,6 @@ export const TestsApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsLevels(testId, localization, page, keywords, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
-        /**
-         * 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get particles for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getTestsParticles(testId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsParticles(testId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
-         * @summary Get skins for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getTestsSkins(testId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTestsSkins(testId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
     }
 };
 
@@ -4030,119 +7563,27 @@ export const TestsApiFactory = function (configuration?: Configuration, basePath
     const localVarFp = TestsApiFp(configuration)
     return {
         /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get testing background
-         * @param {string} testId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getBackgroundTest(testId: string, backgroundName: string, options?: any): AxiosPromise<GetBackgroundResponse> {
-            return localVarFp.getBackgroundTest(testId, backgroundName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get testing effect
-         * @param {string} testId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getEffectTest(testId: string, effectName: string, options?: any): AxiosPromise<GetEffectResponse> {
-            return localVarFp.getEffectTest(testId, effectName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get testing engine
-         * @param {string} testId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getEngineTest(testId: string, engineName: string, options?: any): AxiosPromise<GetEngineResponse> {
-            return localVarFp.getEngineTest(testId, engineName, options).then((request) => request(axios, basePath));
-        },
-        /**
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get testing level
          * @param {string} testId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getLevelTest(testId: string, levelName: string, options?: any): AxiosPromise<GetLevelResponse> {
-            return localVarFp.getLevelTest(testId, levelName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get testing particle
-         * @param {string} testId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getParticleTest(testId: string, particleName: string, options?: any): AxiosPromise<GetParticleResponse> {
-            return localVarFp.getParticleTest(testId, particleName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get testing skin
-         * @param {string} testId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getSkinTest(testId: string, skinName: string, options?: any): AxiosPromise<GetSkinResponse> {
-            return localVarFp.getSkinTest(testId, skinName, options).then((request) => request(axios, basePath));
+        getLevelTest(testId: string, levelName: string, localization?: string, options?: any): AxiosPromise<GetLevelResponse> {
+            return localVarFp.getLevelTest(testId, levelName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * テスト個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} testId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestServerInfo(testId: string, options?: any): AxiosPromise<ServerInfo> {
-            return localVarFp.getTestServerInfo(testId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get backgrounds for test
-         * @param {string} testId 
          * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTestsBackgrounds(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetBackgroundListResponse> {
-            return localVarFp.getTestsBackgrounds(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
-         * @summary Get effects for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsEffects(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetEffectListResponse> {
-            return localVarFp.getTestsEffects(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
-         * @summary Get engines for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsEngines(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetEngineListResponse> {
-            return localVarFp.getTestsEngines(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
+        getTestServerInfo(testId: string, localization?: string, options?: any): AxiosPromise<ServerInfo> {
+            return localVarFp.getTestServerInfo(testId, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * 譜面テスト用エンドポイント/ 背景一覧を返す
@@ -4157,32 +7598,6 @@ export const TestsApiFactory = function (configuration?: Configuration, basePath
         getTestsLevels(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetLevelListResponse> {
             return localVarFp.getTestsLevels(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
         },
-        /**
-         * 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
-         * @summary Get particles for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsParticles(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetParticleListResponse> {
-            return localVarFp.getTestsParticles(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
-         * @summary Get skins for test
-         * @param {string} testId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getTestsSkins(testId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetSkinListResponse> {
-            return localVarFp.getTestsSkins(testId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
     };
 };
 
@@ -4194,138 +7609,30 @@ export const TestsApiFactory = function (configuration?: Configuration, basePath
  */
 export class TestsApi extends BaseAPI {
     /**
-     * It returns specified background info It will raise 404 if the background is not registered in this server
-     * @summary Get testing background
-     * @param {string} testId 
-     * @param {string} backgroundName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getBackgroundTest(testId: string, backgroundName: string, options?: any) {
-        return TestsApiFp(this.configuration).getBackgroundTest(testId, backgroundName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified effect info It will raise 404 if the effect is not registered in this server
-     * @summary Get testing effect
-     * @param {string} testId 
-     * @param {string} effectName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getEffectTest(testId: string, effectName: string, options?: any) {
-        return TestsApiFp(this.configuration).getEffectTest(testId, effectName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified engine info It will raise 404 if the engine is not registered in this server
-     * @summary Get testing engine
-     * @param {string} testId 
-     * @param {string} engineName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getEngineTest(testId: string, engineName: string, options?: any) {
-        return TestsApiFp(this.configuration).getEngineTest(testId, engineName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
      * It returns specified level info It will raise 404 if the level is not registered in this server
      * @summary Get testing level
      * @param {string} testId 
      * @param {string} levelName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TestsApi
      */
-    public getLevelTest(testId: string, levelName: string, options?: any) {
-        return TestsApiFp(this.configuration).getLevelTest(testId, levelName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified particle info It will raise 404 if the particle is not registered in this server
-     * @summary Get testing particle
-     * @param {string} testId 
-     * @param {string} particleName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getParticleTest(testId: string, particleName: string, options?: any) {
-        return TestsApiFp(this.configuration).getParticleTest(testId, particleName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified skin info It will raise 404 if the skin is not registered in this server
-     * @summary Get testing skin
-     * @param {string} testId 
-     * @param {string} skinName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getSkinTest(testId: string, skinName: string, options?: any) {
-        return TestsApiFp(this.configuration).getSkinTest(testId, skinName, options).then((request) => request(this.axios, this.basePath));
+    public getLevelTest(testId: string, levelName: string, localization?: string, options?: any) {
+        return TestsApiFp(this.configuration).getLevelTest(testId, levelName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * テスト個別の情報一覧を返します
      * @summary Get user server info
      * @param {string} testId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getTestServerInfo(testId: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestServerInfo(testId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 譜面テスト用エンドポイント/ 背景一覧を返す(一般の背景リストと同じのが返される)
-     * @summary Get backgrounds for test
-     * @param {string} testId 
      * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TestsApi
      */
-    public getTestsBackgrounds(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestsBackgrounds(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 譜面テスト用エンドポイント/ エフェクト一覧を返す(一般のエフェクトリストと同じのが返される)
-     * @summary Get effects for test
-     * @param {string} testId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getTestsEffects(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestsEffects(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 譜面テスト用エンドポイント/ エンジン一覧を返す(一般のエンジンリストと同じのが返される)
-     * @summary Get engines for test
-     * @param {string} testId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getTestsEngines(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestsEngines(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
+    public getTestServerInfo(testId: string, localization?: string, options?: any) {
+        return TestsApiFp(this.configuration).getTestServerInfo(testId, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4342,35 +7649,103 @@ export class TestsApi extends BaseAPI {
     public getTestsLevels(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
         return TestsApiFp(this.configuration).getTestsLevels(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
     }
+}
 
-    /**
-     * 譜面テスト用エンドポイント/ パーティクル一覧を返す(一般の背景リストと同じのが返される)
-     * @summary Get particles for test
-     * @param {string} testId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TestsApi
-     */
-    public getTestsParticles(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestsParticles(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
+
+/**
+ * UploadsApi - axios parameter creator
+ * @export
+ */
+export const UploadsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 独自要素
+         * @summary Upload file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadFile: async (options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/upload`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
+};
 
+/**
+ * UploadsApi - functional programming interface
+ * @export
+ */
+export const UploadsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UploadsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 独自要素
+         * @summary Upload file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async uploadFile(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadFile(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UploadsApi - factory interface
+ * @export
+ */
+export const UploadsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UploadsApiFp(configuration)
+    return {
+        /**
+         * 独自要素
+         * @summary Upload file
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadFile(options?: any): AxiosPromise<void> {
+            return localVarFp.uploadFile(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UploadsApi - object-oriented interface
+ * @export
+ * @class UploadsApi
+ * @extends {BaseAPI}
+ */
+export class UploadsApi extends BaseAPI {
     /**
-     * 譜面テスト用エンドポイント/ スキン一覧を返す(一般のスキンリストと同じのが返される)
-     * @summary Get skins for test
-     * @param {string} testId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
+     * 独自要素
+     * @summary Upload file
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof TestsApi
+     * @memberof UploadsApi
      */
-    public getTestsSkins(testId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return TestsApiFp(this.configuration).getTestsSkins(testId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
+    public uploadFile(options?: any) {
+        return UploadsApiFp(this.configuration).uploadFile(options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -4404,6 +7779,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
     
@@ -4487,10 +7866,11 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * ユーザー個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} userId 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserServerInfo: async (userId: string, options: any = {}): Promise<RequestArgs> => {
+        getUserServerInfo: async (userId: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getUserServerInfo', 'userId', userId)
             const localVarPath = `/users/{userId}/info`
@@ -4506,265 +7886,8 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get users background
-         * @param {string} userId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersBackground: async (userId: string, backgroundName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersBackground', 'userId', userId)
-            // verify required parameter 'backgroundName' is not null or undefined
-            assertParamExists('getUsersBackground', 'backgroundName', backgroundName)
-            const localVarPath = `/users/{userId}/backgrounds/{backgroundName}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
-                .replace(`{${"backgroundName"}}`, encodeURIComponent(String(backgroundName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * ユーザー個別用エンドポイント/ 背景一覧を返す
-         * @summary Get backgrounds for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersBackgrounds: async (userId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersBackgrounds', 'userId', userId)
-            const localVarPath = `/users/{userId}/backgrounds/list`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
             if (localization !== undefined) {
                 localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get users effect
-         * @param {string} userId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEffect: async (userId: string, effectName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersEffect', 'userId', userId)
-            // verify required parameter 'effectName' is not null or undefined
-            assertParamExists('getUsersEffect', 'effectName', effectName)
-            const localVarPath = `/users/{userId}/effects/{effectName}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
-                .replace(`{${"effectName"}}`, encodeURIComponent(String(effectName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エフェクト一覧を返す
-         * @summary Get effects for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEffects: async (userId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersEffects', 'userId', userId)
-            const localVarPath = `/users/{userId}/effects/list`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get users engine
-         * @param {string} userId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEngine: async (userId: string, engineName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersEngine', 'userId', userId)
-            // verify required parameter 'engineName' is not null or undefined
-            assertParamExists('getUsersEngine', 'engineName', engineName)
-            const localVarPath = `/users/{userId}/engines/{engineName}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
-                .replace(`{${"engineName"}}`, encodeURIComponent(String(engineName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エンジン一覧を返す
-         * @summary Get engines for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEngines: async (userId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersEngines', 'userId', userId)
-            const localVarPath = `/users/{userId}/engines/list`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
             }
 
 
@@ -4783,10 +7906,11 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
          * @summary Get users level
          * @param {string} userId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsersLevel: async (userId: string, levelName: string, options: any = {}): Promise<RequestArgs> => {
+        getUsersLevel: async (userId: string, levelName: string, localization?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getUsersLevel', 'userId', userId)
             // verify required parameter 'levelName' is not null or undefined
@@ -4804,6 +7928,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (localization !== undefined) {
+                localVarQueryParameter['localization'] = localization;
+            }
 
 
     
@@ -4830,180 +7958,6 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
             // verify required parameter 'userId' is not null or undefined
             assertParamExists('getUsersLevels', 'userId', userId)
             const localVarPath = `/users/{userId}/levels/list`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get users particle
-         * @param {string} userId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersParticle: async (userId: string, particleName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersParticle', 'userId', userId)
-            // verify required parameter 'particleName' is not null or undefined
-            assertParamExists('getUsersParticle', 'particleName', particleName)
-            const localVarPath = `/users/{userId}/particles/{particleName}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
-                .replace(`{${"particleName"}}`, encodeURIComponent(String(particleName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * ユーザー個別用エンドポイント/ パーティクル一覧を返す
-         * @summary Get particles for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersParticles: async (userId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersParticles', 'userId', userId)
-            const localVarPath = `/users/{userId}/particles/list`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (localization !== undefined) {
-                localVarQueryParameter['localization'] = localization;
-            }
-
-            if (page !== undefined) {
-                localVarQueryParameter['page'] = page;
-            }
-
-            if (keywords !== undefined) {
-                localVarQueryParameter['keywords'] = keywords;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get users skin
-         * @param {string} userId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersSkin: async (userId: string, skinName: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersSkin', 'userId', userId)
-            // verify required parameter 'skinName' is not null or undefined
-            assertParamExists('getUsersSkin', 'skinName', skinName)
-            const localVarPath = `/users/{userId}/skins/{skinName}`
-                .replace(`{${"userId"}}`, encodeURIComponent(String(userId)))
-                .replace(`{${"skinName"}}`, encodeURIComponent(String(skinName)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * ユーザー個別用エンドポイント/ スキン一覧を返す
-         * @summary Get skins for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersSkins: async (userId: string, localization?: string, page?: number, keywords?: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userId' is not null or undefined
-            assertParamExists('getUsersSkins', 'userId', userId)
-            const localVarPath = `/users/{userId}/skins/list`
                 .replace(`{${"userId"}}`, encodeURIComponent(String(userId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5086,89 +8040,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * ユーザー個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUserServerInfo(userId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserServerInfo(userId, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get users background
-         * @param {string} userId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersBackground(userId: string, backgroundName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersBackground(userId, backgroundName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * ユーザー個別用エンドポイント/ 背景一覧を返す
-         * @summary Get backgrounds for test
-         * @param {string} userId 
          * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUsersBackgrounds(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetBackgroundListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersBackgrounds(userId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get users effect
-         * @param {string} userId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersEffect(userId: string, effectName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersEffect(userId, effectName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エフェクト一覧を返す
-         * @summary Get effects for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersEffects(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEffectListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersEffects(userId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get users engine
-         * @param {string} userId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersEngine(userId: string, engineName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersEngine(userId, engineName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エンジン一覧を返す
-         * @summary Get engines for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersEngines(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetEngineListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersEngines(userId, localization, page, keywords, options);
+        async getUserServerInfo(userId: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ServerInfo>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserServerInfo(userId, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -5176,11 +8053,12 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @summary Get users level
          * @param {string} userId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUsersLevel(userId: string, levelName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersLevel(userId, levelName, options);
+        async getUsersLevel(userId: string, levelName: string, localization?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersLevel(userId, levelName, localization, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -5195,58 +8073,6 @@ export const UsersApiFp = function(configuration?: Configuration) {
          */
         async getUsersLevels(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetLevelListResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersLevels(userId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get users particle
-         * @param {string} userId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersParticle(userId: string, particleName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersParticle(userId, particleName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * ユーザー個別用エンドポイント/ パーティクル一覧を返す
-         * @summary Get particles for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersParticles(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetParticleListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersParticles(userId, localization, page, keywords, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get users skin
-         * @param {string} userId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersSkin(userId: string, skinName: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersSkin(userId, skinName, options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
-        },
-        /**
-         * ユーザー個別用エンドポイント/ スキン一覧を返す
-         * @summary Get skins for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsersSkins(userId: string, localization?: string, page?: number, keywords?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetSkinListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsersSkins(userId, localization, page, keywords, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -5293,94 +8119,24 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * ユーザー個別の情報一覧を返します
          * @summary Get user server info
          * @param {string} userId 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUserServerInfo(userId: string, options?: any): AxiosPromise<ServerInfo> {
-            return localVarFp.getUserServerInfo(userId, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified background info It will raise 404 if the background is not registered in this server
-         * @summary Get users background
-         * @param {string} userId 
-         * @param {string} backgroundName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersBackground(userId: string, backgroundName: string, options?: any): AxiosPromise<GetBackgroundResponse> {
-            return localVarFp.getUsersBackground(userId, backgroundName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * ユーザー個別用エンドポイント/ 背景一覧を返す
-         * @summary Get backgrounds for test
-         * @param {string} userId 
          * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsersBackgrounds(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetBackgroundListResponse> {
-            return localVarFp.getUsersBackgrounds(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified effect info It will raise 404 if the effect is not registered in this server
-         * @summary Get users effect
-         * @param {string} userId 
-         * @param {string} effectName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEffect(userId: string, effectName: string, options?: any): AxiosPromise<GetEffectResponse> {
-            return localVarFp.getUsersEffect(userId, effectName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エフェクト一覧を返す
-         * @summary Get effects for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEffects(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetEffectListResponse> {
-            return localVarFp.getUsersEffects(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified engine info It will raise 404 if the engine is not registered in this server
-         * @summary Get users engine
-         * @param {string} userId 
-         * @param {string} engineName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEngine(userId: string, engineName: string, options?: any): AxiosPromise<GetEngineResponse> {
-            return localVarFp.getUsersEngine(userId, engineName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * ユーザー個別用エンドポイント/ エンジン一覧を返す
-         * @summary Get engines for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersEngines(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetEngineListResponse> {
-            return localVarFp.getUsersEngines(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
+        getUserServerInfo(userId: string, localization?: string, options?: any): AxiosPromise<ServerInfo> {
+            return localVarFp.getUserServerInfo(userId, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * It returns specified level info It will raise 404 if the level is not registered in this server
          * @summary Get users level
          * @param {string} userId 
          * @param {string} levelName 
+         * @param {string} [localization] It localizes response items if possible
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUsersLevel(userId: string, levelName: string, options?: any): AxiosPromise<GetLevelResponse> {
-            return localVarFp.getUsersLevel(userId, levelName, options).then((request) => request(axios, basePath));
+        getUsersLevel(userId: string, levelName: string, localization?: string, options?: any): AxiosPromise<GetLevelResponse> {
+            return localVarFp.getUsersLevel(userId, levelName, localization, options).then((request) => request(axios, basePath));
         },
         /**
          * ユーザー個別用エンドポイント/ 背景一覧を返す
@@ -5394,54 +8150,6 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          */
         getUsersLevels(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetLevelListResponse> {
             return localVarFp.getUsersLevels(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified particle info It will raise 404 if the particle is not registered in this server
-         * @summary Get users particle
-         * @param {string} userId 
-         * @param {string} particleName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersParticle(userId: string, particleName: string, options?: any): AxiosPromise<GetParticleResponse> {
-            return localVarFp.getUsersParticle(userId, particleName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * ユーザー個別用エンドポイント/ パーティクル一覧を返す
-         * @summary Get particles for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersParticles(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetParticleListResponse> {
-            return localVarFp.getUsersParticles(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * It returns specified skin info It will raise 404 if the skin is not registered in this server
-         * @summary Get users skin
-         * @param {string} userId 
-         * @param {string} skinName 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersSkin(userId: string, skinName: string, options?: any): AxiosPromise<GetSkinResponse> {
-            return localVarFp.getUsersSkin(userId, skinName, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * ユーザー個別用エンドポイント/ スキン一覧を返す
-         * @summary Get skins for test
-         * @param {string} userId 
-         * @param {string} [localization] It localizes response items if possible
-         * @param {number} [page] It filters items for pagination if possible
-         * @param {string} [keywords] It filters items for search from list if possible
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsersSkins(userId: string, localization?: string, page?: number, keywords?: string, options?: any): AxiosPromise<GetSkinListResponse> {
-            return localVarFp.getUsersSkins(userId, localization, page, keywords, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5493,96 +8201,13 @@ export class UsersApi extends BaseAPI {
      * ユーザー個別の情報一覧を返します
      * @summary Get user server info
      * @param {string} userId 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUserServerInfo(userId: string, options?: any) {
-        return UsersApiFp(this.configuration).getUserServerInfo(userId, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified background info It will raise 404 if the background is not registered in this server
-     * @summary Get users background
-     * @param {string} userId 
-     * @param {string} backgroundName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersBackground(userId: string, backgroundName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersBackground(userId, backgroundName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * ユーザー個別用エンドポイント/ 背景一覧を返す
-     * @summary Get backgrounds for test
-     * @param {string} userId 
      * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUsersBackgrounds(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersBackgrounds(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified effect info It will raise 404 if the effect is not registered in this server
-     * @summary Get users effect
-     * @param {string} userId 
-     * @param {string} effectName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersEffect(userId: string, effectName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersEffect(userId, effectName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * ユーザー個別用エンドポイント/ エフェクト一覧を返す
-     * @summary Get effects for test
-     * @param {string} userId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersEffects(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersEffects(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified engine info It will raise 404 if the engine is not registered in this server
-     * @summary Get users engine
-     * @param {string} userId 
-     * @param {string} engineName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersEngine(userId: string, engineName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersEngine(userId, engineName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * ユーザー個別用エンドポイント/ エンジン一覧を返す
-     * @summary Get engines for test
-     * @param {string} userId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersEngines(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersEngines(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
+    public getUserServerInfo(userId: string, localization?: string, options?: any) {
+        return UsersApiFp(this.configuration).getUserServerInfo(userId, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -5590,12 +8215,13 @@ export class UsersApi extends BaseAPI {
      * @summary Get users level
      * @param {string} userId 
      * @param {string} levelName 
+     * @param {string} [localization] It localizes response items if possible
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public getUsersLevel(userId: string, levelName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersLevel(userId, levelName, options).then((request) => request(this.axios, this.basePath));
+    public getUsersLevel(userId: string, levelName: string, localization?: string, options?: any) {
+        return UsersApiFp(this.configuration).getUsersLevel(userId, levelName, localization, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -5611,62 +8237,6 @@ export class UsersApi extends BaseAPI {
      */
     public getUsersLevels(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
         return UsersApiFp(this.configuration).getUsersLevels(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified particle info It will raise 404 if the particle is not registered in this server
-     * @summary Get users particle
-     * @param {string} userId 
-     * @param {string} particleName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersParticle(userId: string, particleName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersParticle(userId, particleName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * ユーザー個別用エンドポイント/ パーティクル一覧を返す
-     * @summary Get particles for test
-     * @param {string} userId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersParticles(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersParticles(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * It returns specified skin info It will raise 404 if the skin is not registered in this server
-     * @summary Get users skin
-     * @param {string} userId 
-     * @param {string} skinName 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersSkin(userId: string, skinName: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersSkin(userId, skinName, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * ユーザー個別用エンドポイント/ スキン一覧を返す
-     * @summary Get skins for test
-     * @param {string} userId 
-     * @param {string} [localization] It localizes response items if possible
-     * @param {number} [page] It filters items for pagination if possible
-     * @param {string} [keywords] It filters items for search from list if possible
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof UsersApi
-     */
-    public getUsersSkins(userId: string, localization?: string, page?: number, keywords?: string, options?: any) {
-        return UsersApiFp(this.configuration).getUsersSkins(userId, localization, page, keywords, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
