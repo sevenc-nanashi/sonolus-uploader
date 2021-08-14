@@ -18,7 +18,7 @@ export default class LevelUpload extends Vue {
     name: '',
     version: 1,
     rating: 25,
-    engine: 'hoge',
+    engine: 'pjsekai',
     useSkin: {
       useDefault: true
     },
@@ -34,9 +34,9 @@ export default class LevelUpload extends Vue {
     title: { ja: '' },
     artists: { ja: '' },
     author: { ja: '' },
-    cover: { type: SonolusResourceLocatorTypeEnum.LevelCover, hash: 'hoge', url: 'hoge' },
-    bgm: { type: SonolusResourceLocatorTypeEnum.LevelBgm, hash: 'hoge', url: 'hoge' },
-    data: { type: SonolusResourceLocatorTypeEnum.LevelData, hash: 'hoge', url: 'hoge' },
+    cover: { type: SonolusResourceLocatorTypeEnum.LevelCover, hash: 'chino', url: 'chino' },
+    bgm: { type: SonolusResourceLocatorTypeEnum.LevelBgm, hash: 'chino', url: 'chino' },
+    data: { type: SonolusResourceLocatorTypeEnum.LevelData, hash: 'chino', url: 'chino' },
     genre: 'general',
     _public: false,
     userId: '',
@@ -44,10 +44,6 @@ export default class LevelUpload extends Vue {
     createdTime: 1,
     updatedTime: 1,
     description: { ja: '' }
-  }
-
-  mounted () {
-    console.log(this.level)
   }
 
   head () {
