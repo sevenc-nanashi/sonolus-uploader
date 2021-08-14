@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { Level, SonolusResourceLocatorTypeEnum } from '@/potato'
+import { Level, SonolusResourceLocatorTypeEnum, LocalizationText } from '@/potato'
 import FormFumen from '@/components/FormFumen.vue'
 import { auth } from '@/plugins/firebase'
 
@@ -67,7 +67,13 @@ export default class LevelEdit extends Vue {
     }
     try {
       const resp = await this.$levelsApi.getLevel(id)
-      this.level = resp.data.item
+      const respLevel = resp.data.item
+      respLevel.title = { ja: respLevel.title } as LocalizationText
+      respLevel.artists = { ja: respLevel.artists } as LocalizationText
+      respLevel.author = { ja: respLevel.author } as LocalizationText
+      respLevel.description = { ja: resp.data.description } as LocalizationText
+      respLevel.engine = 'pjsekai'
+      this.level = respLevel
     } catch {
       this.$router.push('/profile/account')
     }
