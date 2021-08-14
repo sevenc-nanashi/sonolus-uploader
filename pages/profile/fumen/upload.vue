@@ -38,7 +38,7 @@ export default class LevelUpload extends Vue {
     bgm: { type: SonolusResourceLocatorTypeEnum.LevelBgm, hash: 'chino', url: 'chino' },
     data: { type: SonolusResourceLocatorTypeEnum.LevelData, hash: 'chino', url: 'chino' },
     genre: 'general',
-    _public: false,
+    public: false,
     userId: '',
     notes: 1,
     createdTime: 1,

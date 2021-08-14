@@ -43,7 +43,7 @@ export default class LevelEdit extends Vue {
     bgm: { type: SonolusResourceLocatorTypeEnum.LevelBgm, hash: 'hoge', url: 'hoge' },
     data: { type: SonolusResourceLocatorTypeEnum.LevelData, hash: 'hoge', url: 'hoge' },
     genre: 'general',
-    _public: false,
+    public: false,
     userId: '',
     notes: 1,
     createdTime: 1,

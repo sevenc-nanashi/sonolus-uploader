@@ -666,7 +666,7 @@ export interface Level {
      * @type {boolean}
      * @memberof Level
      */
-    _public?: boolean;
+    public?: boolean;
     /**
      * 独自要素: 譜面作成者のユーザーID
      * @type {string}
