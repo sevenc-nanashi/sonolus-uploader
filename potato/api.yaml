@@ -1502,9 +1502,25 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
       tags:
         - uploads
       description: 独自要素
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  description: ファイル本体
+                  type: string
+                  format: binary
+      security:
+        - Bearer: []
   '/repository/EffectData/{resourceName}':
     parameters:
       - schema:

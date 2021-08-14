@@ -7661,10 +7661,11 @@ export const UploadsApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * 独自要素
          * @summary Upload file
+         * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadFile: async (options: any = {}): Promise<RequestArgs> => {
+        uploadFile: async (file?: any, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/upload`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7676,12 +7677,24 @@ export const UploadsApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication Bearer required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
     
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7701,11 +7714,12 @@ export const UploadsApiFp = function(configuration?: Configuration) {
         /**
          * 独自要素
          * @summary Upload file
+         * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async uploadFile(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadFile(options);
+        async uploadFile(file?: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadFile(file, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -7721,11 +7735,12 @@ export const UploadsApiFactory = function (configuration?: Configuration, basePa
         /**
          * 独自要素
          * @summary Upload file
+         * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadFile(options?: any): AxiosPromise<void> {
-            return localVarFp.uploadFile(options).then((request) => request(axios, basePath));
+        uploadFile(file?: any, options?: any): AxiosPromise<void> {
+            return localVarFp.uploadFile(file, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7740,12 +7755,13 @@ export class UploadsApi extends BaseAPI {
     /**
      * 独自要素
      * @summary Upload file
+     * @param {any} [file] ファイル本体
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UploadsApi
      */
-    public uploadFile(options?: any) {
-        return UploadsApiFp(this.configuration).uploadFile(options).then((request) => request(this.axios, this.basePath));
+    public uploadFile(file?: any, options?: any) {
+        return UploadsApiFp(this.configuration).uploadFile(file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
