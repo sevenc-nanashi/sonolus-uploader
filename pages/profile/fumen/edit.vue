@@ -73,6 +73,7 @@ export default class LevelEdit extends Vue {
       respLevel.author = { ja: respLevel.author } as LocalizationText
       respLevel.description = { ja: resp.data.description } as LocalizationText
       respLevel.engine = 'pjsekai'
+      respLevel.public = false
       this.level = respLevel
     } catch {
       this.$router.push('/profile/account')
