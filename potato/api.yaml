@@ -1502,13 +1502,19 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUploadResponse'
         '400':
           description: Bad Request
         '401':
           description: Unauthorized
       tags:
         - uploads
-      description: 独自要素
+      description: |-
+        ファイルのアップロードを受け付ける
+        (投稿から1時間以上使用されないファイルは自動削除したい)
       requestBody:
         content:
           multipart/form-data:
@@ -1992,11 +1998,20 @@ components:
             item:
               $ref: '#/components/schemas/Particle'
         title:
-          $ref: '#/components/schemas/LocalizationText'
+          oneOf:
+            - type: string
+              properties: {}
+            - $ref: '#/components/schemas/LocalizationText'
         artists:
-          $ref: '#/components/schemas/LocalizationText'
+          oneOf:
+            - type: string
+              properties: {}
+            - $ref: '#/components/schemas/LocalizationText'
         author:
-          $ref: '#/components/schemas/LocalizationText'
+          oneOf:
+            - type: string
+              properties: {}
+            - $ref: '#/components/schemas/LocalizationText'
         cover:
           $ref: '#/components/schemas/SonolusResourceLocator'
         bgm:
@@ -2034,7 +2049,10 @@ components:
           description: '独自要素: データを更新したエポックミリ秒(ソート用)'
           minimum: 0
         description:
-          $ref: '#/components/schemas/LocalizationText'
+          oneOf:
+            - type: string
+              properties: {}
+            - $ref: '#/components/schemas/LocalizationText'
         coverHash:
           type: string
           description: '独自要素: サムネのハッシュ値(DBを兼ねるため)'
@@ -2057,7 +2075,6 @@ components:
         - version
         - rating
         - engine
-        - title
         - artists
         - author
         - cover
@@ -2816,6 +2833,26 @@ components:
           maxLength: 1000
       required:
         - ja
+    PostUploadResponse:
+      title: PostUploadResponse
+      type: object
+      properties:
+        message:
+          type: string
+          description: Response status in human readable
+        filename:
+          type: string
+      required:
+        - message
+      description: Structure of post upload response
+      x-examples:
+        success:
+          value:
+            message: File saved.
+            filename: LHSFemJ5DiiH4QpjbyuU.json
+        failed:
+          value:
+            message: File validation failed.
   securitySchemes:
     Bearer:
       type: http

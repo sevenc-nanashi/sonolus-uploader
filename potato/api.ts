@@ -621,22 +621,22 @@ export interface Level {
     useParticle?: LevelUseParticle;
     /**
      * 
-     * @type {LocalizationText}
+     * @type {string | LocalizationText}
      * @memberof Level
      */
-    title: LocalizationText;
+    title?: string | LocalizationText;
     /**
      * 
-     * @type {LocalizationText}
+     * @type {string | LocalizationText}
      * @memberof Level
      */
-    artists: LocalizationText;
+    artists: string | LocalizationText;
     /**
      * 
-     * @type {LocalizationText}
+     * @type {string | LocalizationText}
      * @memberof Level
      */
-    author: LocalizationText;
+    author: string | LocalizationText;
     /**
      * 
      * @type {SonolusResourceLocator}
@@ -693,10 +693,10 @@ export interface Level {
     updatedTime?: number;
     /**
      * 
-     * @type {LocalizationText}
+     * @type {string | LocalizationText}
      * @memberof Level
      */
-    description: LocalizationText;
+    description: string | LocalizationText;
     /**
      * 独自要素: サムネのハッシュ値(DBを兼ねるため)
      * @type {string}
@@ -925,6 +925,25 @@ export interface Particle {
      * @memberof Particle
      */
     description?: string;
+}
+/**
+ * Structure of post upload response
+ * @export
+ * @interface PostUploadResponse
+ */
+export interface PostUploadResponse {
+    /**
+     * Response status in human readable
+     * @type {string}
+     * @memberof PostUploadResponse
+     */
+    message: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostUploadResponse
+     */
+    filename?: string;
 }
 /**
  * Response / Request struct of getServerInfo
@@ -7659,7 +7678,7 @@ export class TestsApi extends BaseAPI {
 export const UploadsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * 独自要素
+         * ファイルのアップロードを受け付ける (投稿から1時間以上使用されないファイルは自動削除したい)
          * @summary Upload file
          * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
@@ -7712,13 +7731,13 @@ export const UploadsApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = UploadsApiAxiosParamCreator(configuration)
     return {
         /**
-         * 独自要素
+         * ファイルのアップロードを受け付ける (投稿から1時間以上使用されないファイルは自動削除したい)
          * @summary Upload file
          * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async uploadFile(file?: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async uploadFile(file?: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostUploadResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.uploadFile(file, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -7733,13 +7752,13 @@ export const UploadsApiFactory = function (configuration?: Configuration, basePa
     const localVarFp = UploadsApiFp(configuration)
     return {
         /**
-         * 独自要素
+         * ファイルのアップロードを受け付ける (投稿から1時間以上使用されないファイルは自動削除したい)
          * @summary Upload file
          * @param {any} [file] ファイル本体
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadFile(file?: any, options?: any): AxiosPromise<void> {
+        uploadFile(file?: any, options?: any): AxiosPromise<PostUploadResponse> {
             return localVarFp.uploadFile(file, options).then((request) => request(axios, basePath));
         },
     };
@@ -7753,7 +7772,7 @@ export const UploadsApiFactory = function (configuration?: Configuration, basePa
  */
 export class UploadsApi extends BaseAPI {
     /**
-     * 独自要素
+     * ファイルのアップロードを受け付ける (投稿から1時間以上使用されないファイルは自動削除したい)
      * @summary Upload file
      * @param {any} [file] ファイル本体
      * @param {*} [options] Override http request option.
