@@ -25,21 +25,21 @@
                 譜面情報
               </div>
               <v-text-field
-                v-model="level.title"
+                v-model="level.title.ja"
                 :rules="rules.title"
                 counter="50"
                 label="Title"
                 required
               />
               <v-text-field
-                v-model="level.artists"
+                v-model="level.artists.ja"
                 :rules="rules.artists"
                 counter="50"
                 label="Artists"
                 required
               />
               <v-text-field
-                v-model="level.author"
+                v-model="level.author.ja"
                 :rules="rules.author"
                 counter="30"
                 label="Author"
@@ -51,7 +51,7 @@
                 label="Genre"
               />
               <v-textarea
-                v-model="level.description"
+                v-model="level.description.ja"
                 :rules="rules.description"
                 label="Description"
                 counter
@@ -120,7 +120,7 @@
             x-large
             color="success"
             class="mr-4"
-            @click="addToFirebase"
+            @click="postLevel"
           >
             利用規約に同意して投稿する
           </v-btn>
@@ -161,6 +161,22 @@
             text
             v-bind="attrs"
             @click="uploadSuccess = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+      <v-snackbar
+        v-model="uploadFailed"
+        timeout="3000"
+      >
+        投稿失敗
+        <template #action="{ attrs }">
+          <v-btn
+            color="red"
+            text
+            v-bind="attrs"
+            @click="uploadFailed = false"
           >
             Close
           </v-btn>
@@ -219,6 +235,7 @@ export default class FormFumen extends Vue {
 
   uploadProgress: string = ''
   uploadSuccess: boolean = false
+  uploadFailed: boolean = false
   termsOfUses: string = ToS.default
 
   requestOptions : RequestOptions = {
@@ -233,6 +250,9 @@ export default class FormFumen extends Vue {
       if (!user) {
         this.$router.push('/')
       }
+      getJwtToken().then((token) => {
+        this.requestOptions.headers.Authorization = `Bearer ${token}`
+      })
     })
   }
 
@@ -245,29 +265,18 @@ export default class FormFumen extends Vue {
   }
 
   async uploadFumen () {
-    if (this.level !== undefined) {
-      if (this.level.name) {
-        const token = await getJwtToken()
-        if (token) {
-          this.requestOptions.headers.Authorization = `Bearer ${token}`
-        }
-        const resp = await this.$levelsApi.addLevel(this.level.name, this.level, this.requestOptions)
-        return resp
-      }
-    }
+    const resp = await this.$levelsApi.addLevel(this.level.name, this.level, this.requestOptions)
+    return resp
   }
 
   async editFumen () {
-    if (this.level !== undefined) {
-      if (this.level.name) {
-        const token = await getJwtToken()
-        if (token) {
-          this.requestOptions.headers.Authorization = `Bearer ${token}`
-        }
-        const resp = await this.$levelsApi.editLevel(this.level.name, this.level, this.requestOptions)
-        return resp
-      }
-    }
+    const resp = await this.$levelsApi.editLevel(this.level.name, this.level, this.requestOptions)
+    return resp
+  }
+
+  async uploadFumenData (file: File) {
+    const resp = await this.$uploadsApi.uploadFile(file, this.requestOptions)
+    return resp
   }
 
   goTop () : void {
@@ -284,7 +293,7 @@ export default class FormFumen extends Vue {
     this.uploadSuccess = true
   }
 
-  async addToFirebase () : Promise<void> {
+  async postLevel () : Promise<void> {
     const isFormOk = (
       this.$refs.form as Vue & { validate: () => boolean }
     ).validate()
@@ -292,69 +301,39 @@ export default class FormFumen extends Vue {
       this.goTop()
       return
     }
-    // 開発環境かどうかで処理を分岐
-    if (process.env.NODE_ENV === 'production') {
-      // const uid = auth.currentUser.uid
-      this.uploadProgress = '投稿を開始します'
-      if (this.level !== undefined) {
-        try {
-          if (this.files.cover.name !== '') {
-            this.uploadProgress = '譜面カバーを登録しています...'
-            // const coverHash = await this.generateSHA1Hash(this.files.cover)
-            // const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
-            // await this.uploadToStorage(coverRef, this.files.cover)
-            /*
-            if (this.level.cover !== undefined) {
-              this.level.cover.hash = coverHash
-              this.level.cover.url = await coverRef.getDownloadURL()
-            }
-            */
-          }
-          if (this.files.bgm.name !== '') {
-            this.uploadProgress = '譜面BGMを登録しています...'
-            // const bgmHash = await this.generateSHA1Hash(this.files.bgm)
-            // const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
-            // await this.uploadToStorage(bgmRef, this.files.bgm)
-            // if (this.level.bgm !== undefined) {
-            //   this.level.bgm.hash = bgmHash
-            //   this.level.bgm.url = await bgmRef.getDownloadURL()
-            // }
-          }
-          if (this.files.data.name !== '') {
-            this.uploadProgress = '譜面データを登録しています...'
-            // const dataZip = await this.compressFumenData()
-            // const dataHash = await this.generateSHA1HashByUint8(dataZip)
-            // const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-            // await this.uploadToStorageByUint8(dataRef, dataZip)
-            // if (this.level.data !== undefined) {
-            //   this.level.data.hash = dataHash
-            //   this.level.data.url = await dataRef.getDownloadURL()
-            // }
-          }
-          this.uploadProgress = '譜面情報を登録しています...'
-          if (!this.isUpdate) {
-            const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 12)
-            this.level.name = nanoid()
-            const resp = await this.uploadFumen()
-            if (resp) {
-              console.log(resp)
-            }
-          } else {
-            await this.editFumen()
-          }
-          this.resetForm()
-        } catch (e) {
-          console.error(e)
-        }
+    this.level.userId = auth.currentUser.uid
+    this.uploadProgress = '投稿を開始します'
+    try {
+      if (this.files.cover.name !== '') {
+        this.uploadProgress = '譜面カバーを登録しています...'
+        const resp = await this.uploadFumenData(this.files.cover)
+        this.level.cover.url = `${this.$config.API_ENDPOINT}/uploads/${resp.data.filename}`
       }
-    // Storageのエミュレータが無いので開発環境ではファイル検証を行えない
-    } else {
-      // const dataZip = await this.compressFumenData()
-      // const dataHash = await this.generateSHA1HashByUint8(dataZip)
-      // console.log('譜面gzipのハッシュ値', dataHash)
+      if (this.files.bgm.name !== '') {
+        this.uploadProgress = '譜面BGMを登録しています...'
+        const resp = await this.uploadFumenData(this.files.bgm)
+        this.level.bgm.url = `${this.$config.API_ENDPOINT}/uploads/${resp.data.filename}`
+      }
+      if (this.files.data.name !== '') {
+        this.uploadProgress = '譜面データを登録しています...'
+        const resp = await this.uploadFumenData(this.files.data)
+        this.level.data.url = `${this.$config.API_ENDPOINT}/uploads/${resp.data.filename}`
+      }
       this.uploadProgress = '譜面情報を登録しています...'
-      await this.uploadFumen()
+      if (!this.isUpdate) {
+        const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 12)
+        this.level.name = nanoid()
+        const resp = await this.uploadFumen()
+        if (resp) {
+          console.log(resp)
+        }
+      } else {
+        await this.editFumen()
+      }
       this.resetForm()
+    } catch (e) {
+      this.uploadFailed = true
+      console.error(e)
     }
     this.uploadProgress = ''
   }
