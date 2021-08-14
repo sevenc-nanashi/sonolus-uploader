@@ -1,6 +1,5 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
-import 'firebase/storage'
 
 // SDKを使用するためのConfig情報
 const firebaseConfig = {
@@ -19,15 +18,12 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth()
-const storage = firebase.storage()
 
 if (process.env.NODE_ENV !== 'production') {
   auth.useEmulator('http://localhost:9099/')
 }
 
-export { auth, storage }
+export { auth }
 export const google = new firebase.auth.GoogleAuthProvider()
-export type StorageReference = firebase.storage.Reference
-export type StorageMetadata = firebase.storage.UploadMetadata
 export type FirebaseAuth = firebase.auth.Auth
 export type FirebaseUser = firebase.User
