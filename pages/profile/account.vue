@@ -35,12 +35,19 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  v-model="potatoUser.testId"
-                  label="テストコード"
-                  type="text"
-                  required
-                />
+                <v-form
+                  ref="form"
+                  lazy-validation
+                >
+                  <v-text-field
+                    v-model="potatoUser.testId"
+                    label="テストコード"
+                    counter="8"
+                    :rules="codeRule"
+                    type="text"
+                    required
+                  />
+                </v-form>
               </v-col>
             </v-row>
           </v-container>
@@ -137,9 +144,9 @@ import { Vue, Component, Watch } from 'nuxt-property-decorator'
 import { Level, User } from '@/potato'
 import { getJwtToken } from '@/utils/token'
 import { RequestOptions } from '~/types/upload/request-options'
-import { auth } from '~/plugins/firebase'
+import { auth, FirebaseUser } from '~/plugins/firebase'
 import { getUserLevelList } from '~/utils/search-support'
-import { editUser } from '~/utils/account-support'
+import { editUser, registerUser } from '~/utils/account-support'
 
 @Component
 export default class Account extends Vue {
@@ -158,6 +165,11 @@ export default class Account extends Vue {
     }
   }
 
+  codeRule : object = [
+    (v: any) => { return v.length === 8 || 'Test code must be 8 characters' },
+    (v: any) => { return !!v || 'Test code is required' }
+  ]
+
   async resetUserLevelList (uid: string) {
     const resp = await getUserLevelList(
       this.$usersApi,
@@ -171,12 +183,26 @@ export default class Account extends Vue {
     this.openLoading = false
   }
 
-  async resetUserSettings (uid: string) {
-    const resp = await this.$usersApi.getUser(uid)
-    this.potatoUser = resp.data
+  async resetUserSettings (user: FirebaseUser) {
+    try {
+      const resp = await this.$usersApi.getUser(user.uid, this.requestOptions)
+      this.potatoUser = resp.data
+      console.log(resp.data)
+    } catch (e) {
+      registerUser(this.$usersApi, user, this.requestOptions)
+      setTimeout(() => {
+        location.reload()
+      }, 2000)
+    }
   }
 
   async setTestId () {
+    const isFormOk = (
+      this.$refs.form as Vue & { validate: () => boolean }
+    ).validate()
+    if (!isFormOk) {
+      return
+    }
     if (this.potatoUser) {
       try {
         await editUser(this.$usersApi, this.potatoUser, this.requestOptions)
@@ -194,7 +220,7 @@ export default class Account extends Vue {
         getJwtToken().then((token) => {
           this.requestOptions.headers.Authorization = `Bearer ${token}`
           this.resetUserLevelList(user.uid)
-          this.resetUserSettings(user.uid)
+          this.resetUserSettings(user)
         })
       } else {
         this.$router.push('/')
