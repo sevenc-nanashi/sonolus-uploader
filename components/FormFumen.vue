@@ -172,15 +172,12 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
-import { Level, LevelGenreEnum } from '@/potato'
+import { Level } from '@/potato'
 import { getJwtToken } from '@/utils/token'
-import { auth, storage, StorageReference, StorageMetadata } from '@/plugins/firebase'
+import { auth } from '@/plugins/firebase'
 import { UploadFiles } from '@/types/upload/files'
 import { RequestOptions } from '@/types/upload/request-options'
-import { gzipSync } from 'fflate'
-import SHA1 from 'crypto-js/sha1'
 import { customAlphabet } from 'nanoid'
-import LibTypedArrays from 'crypto-js/lib-typedarrays'
 const ToS = require('~/assets/texts/ToS.txt')
 
 @Component
@@ -207,11 +204,11 @@ export default class FormFumen extends Vue {
     ]
   }
 
-  genres : Array<LevelGenreEnum> = [
-    LevelGenreEnum.General,
-    LevelGenreEnum.Jpop,
-    LevelGenreEnum.Anime,
-    LevelGenreEnum.Vocaloid
+  genres : Array<string> = [
+    'general',
+    'jpop',
+    'anime',
+    'vocaloid'
   ]
 
   files: UploadFiles = {
@@ -280,66 +277,6 @@ export default class FormFumen extends Vue {
     })
   }
 
-  async compressFumenData () : Promise<Uint8Array> {
-    const massiveFile = new Uint8Array(await this.files.data.arrayBuffer())
-    const gzippedFumen = gzipSync(massiveFile, {
-      filename: this.files.data.name
-    })
-    return gzippedFumen
-  }
-
-  readFileAsArrayBuffer (file: File) : Promise<number[]> {
-    return new Promise<number[]>((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onloadend = (e: any) => {
-        resolve(e.target.result)
-      }
-      reader.onerror = reject
-      reader.readAsArrayBuffer(file as Blob)
-    })
-  }
-
-  async generateSHA1Hash (file: File) : Promise<string> {
-    const binary = await this.readFileAsArrayBuffer(file)
-    const wordArray = LibTypedArrays.create(binary)
-    const hash = SHA1(wordArray).toString()
-    return hash
-  }
-
-  async generateSHA1HashByUint8 (binary: Uint8Array) : Promise<string> {
-    const blob = new Blob([binary.buffer], { type: 'application/octet-binary' })
-    /*
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = 'level.gz'
-    link.innerHTML = 'Download!'
-    document.body.appendChild(link)
-    */
-    return await this.generateSHA1Hash(blob as File)
-  }
-
-  async uploadToStorage (ref: StorageReference, file: File) {
-    try {
-      const metadata : StorageMetadata = {}
-      metadata.cacheControl = 'public,max-age=31536000'
-      const task = await ref.put(file as Blob, metadata)
-      return task
-    } catch (e: any) {
-      console.log(e)
-      return null
-    }
-  }
-
-  async uploadToStorageByUint8 (ref: StorageReference, binary: Uint8Array) {
-    try {
-      const task = await ref.put(binary)
-      return task
-    } catch (e: any) {
-      console.log(e)
-      return null
-    }
-  }
-
   async resetForm () : Promise<void> {
     const resetter = (this.$refs.form as Vue & { reset: () => void })
     await resetter.reset()
@@ -357,41 +294,42 @@ export default class FormFumen extends Vue {
     }
     // 開発環境かどうかで処理を分岐
     if (process.env.NODE_ENV === 'production') {
-      const fumenRef = storage.ref().child('fumen')
-      const uid = auth.currentUser.uid
+      // const uid = auth.currentUser.uid
       this.uploadProgress = '投稿を開始します'
       if (this.level !== undefined) {
         try {
           if (this.files.cover.name !== '') {
             this.uploadProgress = '譜面カバーを登録しています...'
-            const coverHash = await this.generateSHA1Hash(this.files.cover)
-            const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
-            await this.uploadToStorage(coverRef, this.files.cover)
+            // const coverHash = await this.generateSHA1Hash(this.files.cover)
+            // const coverRef = fumenRef.child(`cover/${uid}/${coverHash}`)
+            // await this.uploadToStorage(coverRef, this.files.cover)
+            /*
             if (this.level.cover !== undefined) {
               this.level.cover.hash = coverHash
               this.level.cover.url = await coverRef.getDownloadURL()
             }
+            */
           }
           if (this.files.bgm.name !== '') {
             this.uploadProgress = '譜面BGMを登録しています...'
-            const bgmHash = await this.generateSHA1Hash(this.files.bgm)
-            const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
-            await this.uploadToStorage(bgmRef, this.files.bgm)
-            if (this.level.bgm !== undefined) {
-              this.level.bgm.hash = bgmHash
-              this.level.bgm.url = await bgmRef.getDownloadURL()
-            }
+            // const bgmHash = await this.generateSHA1Hash(this.files.bgm)
+            // const bgmRef = fumenRef.child(`bgm/${uid}/${bgmHash}`)
+            // await this.uploadToStorage(bgmRef, this.files.bgm)
+            // if (this.level.bgm !== undefined) {
+            //   this.level.bgm.hash = bgmHash
+            //   this.level.bgm.url = await bgmRef.getDownloadURL()
+            // }
           }
           if (this.files.data.name !== '') {
             this.uploadProgress = '譜面データを登録しています...'
-            const dataZip = await this.compressFumenData()
-            const dataHash = await this.generateSHA1HashByUint8(dataZip)
-            const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
-            await this.uploadToStorageByUint8(dataRef, dataZip)
-            if (this.level.data !== undefined) {
-              this.level.data.hash = dataHash
-              this.level.data.url = await dataRef.getDownloadURL()
-            }
+            // const dataZip = await this.compressFumenData()
+            // const dataHash = await this.generateSHA1HashByUint8(dataZip)
+            // const dataRef = fumenRef.child(`data/${uid}/${dataHash}`)
+            // await this.uploadToStorageByUint8(dataRef, dataZip)
+            // if (this.level.data !== undefined) {
+            //   this.level.data.hash = dataHash
+            //   this.level.data.url = await dataRef.getDownloadURL()
+            // }
           }
           this.uploadProgress = '譜面情報を登録しています...'
           if (!this.isUpdate) {
@@ -411,9 +349,9 @@ export default class FormFumen extends Vue {
       }
     // Storageのエミュレータが無いので開発環境ではファイル検証を行えない
     } else {
-      const dataZip = await this.compressFumenData()
-      const dataHash = await this.generateSHA1HashByUint8(dataZip)
-      console.log('譜面gzipのハッシュ値', dataHash)
+      // const dataZip = await this.compressFumenData()
+      // const dataHash = await this.generateSHA1HashByUint8(dataZip)
+      // console.log('譜面gzipのハッシュ値', dataHash)
       this.uploadProgress = '譜面情報を登録しています...'
       await this.uploadFumen()
       this.resetForm()

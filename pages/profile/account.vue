@@ -164,10 +164,6 @@ export default class Account extends Vue {
       uid,
       this.page,
       undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
       this.requestOptions
     )
     this.levels = resp.items

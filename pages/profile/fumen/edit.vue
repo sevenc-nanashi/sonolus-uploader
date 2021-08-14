@@ -7,10 +7,9 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { Level, Engine, LevelGenreEnum, SonolusResourceLocatorTypeEnum } from '@/potato'
+import { Level, SonolusResourceLocatorTypeEnum } from '@/potato'
 import FormFumen from '@/components/FormFumen.vue'
 import { auth } from '@/plugins/firebase'
-import defaultEngine from '@/assets/json/defaultEngine.json'
 
 @Component({
   components: { FormFumen }
@@ -20,7 +19,7 @@ export default class LevelEdit extends Vue {
     name: '',
     version: 1,
     rating: 1,
-    engine: defaultEngine as Engine,
+    engine: '',
     useSkin: {
       item: undefined,
       useDefault: true
@@ -37,19 +36,19 @@ export default class LevelEdit extends Vue {
       item: undefined,
       useDefault: true
     },
-    title: '',
-    artists: '',
-    author: '',
+    title: { ja: '' },
+    artists: { ja: '' },
+    author: { ja: '' },
     cover: { type: SonolusResourceLocatorTypeEnum.LevelCover, hash: 'hoge', url: 'hoge' },
     bgm: { type: SonolusResourceLocatorTypeEnum.LevelBgm, hash: 'hoge', url: 'hoge' },
     data: { type: SonolusResourceLocatorTypeEnum.LevelData, hash: 'hoge', url: 'hoge' },
-    genre: LevelGenreEnum.General,
+    genre: 'general',
     _public: false,
     userId: '',
     notes: 1,
     createdTime: 1,
     updatedTime: 1,
-    description: ''
+    description: { ja: '' }
   }
 
   mounted () {
