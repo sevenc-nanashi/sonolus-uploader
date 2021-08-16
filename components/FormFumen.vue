@@ -120,6 +120,7 @@
             x-large
             color="success"
             class="mr-4"
+            :disabled="publishBlocked"
             @click="postLevel"
           >
             利用規約に同意して投稿する
@@ -188,12 +189,12 @@
 
 <script lang="ts">
 import { Vue, Component, PropSync } from 'nuxt-property-decorator'
+import { customAlphabet } from 'nanoid'
 import { Level } from '@/potato'
 import { getJwtToken } from '@/utils/token'
 import { auth } from '@/plugins/firebase'
 import { UploadFiles } from '@/types/upload/files'
 import { RequestOptions } from '@/types/upload/request-options'
-import { customAlphabet } from 'nanoid'
 const ToS = require('~/assets/texts/ToS.txt')
 
 @Component
@@ -236,6 +237,7 @@ export default class FormFumen extends Vue {
   uploadProgress: string = ''
   uploadSuccess: boolean = false
   uploadFailed: boolean = false
+  publishBlocked: boolean = false
   termsOfUses: string = ToS.default
 
   requestOptions : RequestOptions = {
@@ -303,6 +305,7 @@ export default class FormFumen extends Vue {
     }
     this.level.userId = auth.currentUser.uid
     this.uploadProgress = '投稿を開始します'
+    this.publishBlocked = true
     try {
       if (this.files.cover.name !== '') {
         this.uploadProgress = '譜面カバーを登録しています...'
