@@ -147,8 +147,11 @@ import { RequestOptions } from '~/types/upload/request-options'
 import { auth, FirebaseUser } from '~/plugins/firebase'
 import { getUserLevelList } from '~/utils/search-support'
 import { editUser, registerUser } from '~/utils/account-support'
+import Fumen from '~/components/Fumen.vue'
 
-@Component
+@Component({
+  components: { Fumen }
+})
 export default class Account extends Vue {
   userName: string | null = '読込中'
   userPhoto: string | null = ''
@@ -187,7 +190,6 @@ export default class Account extends Vue {
     try {
       const resp = await this.$usersApi.getUser(user.uid, this.requestOptions)
       this.potatoUser = resp.data
-      console.log(resp.data)
     } catch (e) {
       registerUser(this.$usersApi, user, this.requestOptions)
       setTimeout(() => {
