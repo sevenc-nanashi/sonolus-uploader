@@ -15,33 +15,26 @@ __ひとこと:__ えななんのパンツは何色？
 __Twitter:__ https://twitter.com/PurplePaletteCH
 <br>
 
-### Aki / 開発班
-<img width="128" alt="Akiのプロフィール画像" src="https://cdn.discordapp.com/avatars/754345370267549718/82584d3f981b741ac3166b5e9fed2ef8.png?size=128">
-
-サイト開発陣のひとり、バックエンド担当、あきちゃん。<br>
-
-__ひとこと:__ (お忙しそうなので省略)
-__Twitter:__ -
-<br>
-
 ### お窓 / 開発班
 <img width="128" alt="お窓のプロフィール画像" src="https://cdn.discordapp.com/avatars/153112769724416000/9e10e1f28ff4fe9a13cca1d71002aaf9.png?size=128">
 
-サイト開発陣のひとり、フロントエンド担当、フロントなんもわからん。<br>
+サイトとAPIの開発と保守してる人。フロントエンドとバックエンドとサーバー担当してるがフロントもバックエンドもサーバーもなんもわからん。<br>
 
-__ひとこと:__ 香風智乃すき。
+__ひとこと:__ 香風智乃のパンツは何色？
 __Twitter:__ https://twitter.com/shallow_omado
 <br>
 
-### placehold / 創作譜面班
-<img width="128" alt="開発者" src="https://placehold.jp/128x128.png">
+### Aki / 開発班
+何かしら開発してる人、あきちゃん。<br>
 
-創作譜面作ったり作らなかったりします。<br>
-
-__ひとこと:__ (お忙しそうなので省略)
+__ひとこと:__ -
 __Twitter:__ -
-
 <br>
+
+### 譜面班
+許可を貰ってないので控えますが 数人が合作を作ったり、それぞれで譜面を作ったりしています
+<br>
+
 
 ## 新メンバー募集中! <hr><br>
 
