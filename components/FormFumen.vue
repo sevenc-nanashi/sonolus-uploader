@@ -125,8 +125,54 @@
           >
             利用規約に同意して投稿する
           </v-btn>
+          <v-btn
+            block
+            x-large
+            color="error"
+            class="mr-4"
+            :disabled="publishBlocked"
+            @click="openDeleteConfirm = true"
+          >
+            投稿した譜面を削除する
+          </v-btn>
         </v-card>
       </v-form>
+      <!-- テストサーバー設定 ダイアログ -->
+      <v-dialog
+        v-model="openDeleteConfirm"
+        persistent
+        max-width="600px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">譜面削除の確認</span>
+          </v-card-title>
+          <v-card-text>
+            <span class="text-h5">
+              本当に譜面を削除してよろしいですか？
+              (ローカルに保存されている場合を除き)
+              再投稿しない限り他プレイヤーが遊べない状態になります。
+            </span>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="openDeleteConfirm = false"
+            >
+              削除しないで閉じる
+            </v-btn>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="deleteLevel(); openDeleteConfirm = false"
+            >
+              削除
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-overlay :value="uploadProgress != ''">
         <v-container>
           <v-row
@@ -238,6 +284,7 @@ export default class FormFumen extends Vue {
   uploadSuccess: boolean = false
   uploadFailed: boolean = false
   publishBlocked: boolean = false
+  openDeleteConfirm: boolean = false
   termsOfUses: string = ToS.default
 
   requestOptions : RequestOptions = {
@@ -274,6 +321,12 @@ export default class FormFumen extends Vue {
   async editFumen () {
     const resp = await this.$levelsApi.editLevel(this.level.name, this.level, this.requestOptions)
     return resp
+  }
+
+  async deleteFumen () {
+    await this.$levelsApi.deleteLevel(this.level.name, this.requestOptions)
+    alert('譜面情報を削除しました')
+    this.$router.push('/profile/account')
   }
 
   async uploadFumenData (file: File) {
