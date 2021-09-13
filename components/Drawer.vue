@@ -87,7 +87,7 @@ export default class Drawer extends Vue {
     {
       icon: 'mdi-information',
       title: '投稿ガイドライン',
-      to: '/help/guide-potato-fumen'
+      to: '/help/publish-fumen-rules'
     },
     {
       icon: 'mdi-palette',

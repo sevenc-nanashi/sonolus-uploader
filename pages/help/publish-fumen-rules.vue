@@ -60,10 +60,10 @@ general
 music.mp3
 <br>
 
-## level.json
-sus2sonolusで変換した出力ファイルを選択してください。それ以外のものが選択された場合、Sonolus上でプレイすることができません。
+## data.sus
+ChedのSUS形式の出力ファイルを選択してください。それ以外のものが選択された場合、Sonolus上でプレイすることができません。
 ### 例
-[https://file.io/dB5oRaPT8CV8](https://file.io/dB5oRaPT8CV8)
+data.sus
 <br>
 </template>
 

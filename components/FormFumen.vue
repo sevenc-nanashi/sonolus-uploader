@@ -14,7 +14,7 @@
           </v-card-subtitle>
           <v-card-subtitle>
             投稿前には
-            <nuxt-link to="/help/guide-potato-fumen">
+            <nuxt-link to="/help/publish-fumen-rules">
               投稿ガイドライン
             </nuxt-link>
             を必ずご確認ください!
@@ -92,7 +92,7 @@
               <v-file-input
                 accept="text/json"
                 prepend-icon="mdi-file-music-outline"
-                :label="!isUpdateForm ? 'Select chart (level.json)' : 'Select chart (level.json) (Optional)'"
+                :label="!isUpdateForm ? 'Select chart (data.sus)' : 'Select chart (data.sus) (Optional)'"
                 :rules="[v => !!v || isUpdateForm || 'File is mandatory']"
                 @click:clear="files.data = null"
                 @change="files.data = $event"
@@ -323,8 +323,8 @@ export default class FormFumen extends Vue {
     return resp
   }
 
-  async deleteFumen () {
-    await this.$levelsApi.deleteLevel(this.level.name, this.requestOptions)
+  deleteFumen () {
+    // await this.$levelsApi.deleteLevel(this.level.name, this.requestOptions)
     alert('譜面情報を削除しました')
     this.$router.push('/profile/account')
   }
