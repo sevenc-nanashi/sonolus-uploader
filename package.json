@@ -24,7 +24,7 @@
     "jszip": "^3.6.0",
     "logrocket": "^2.0.0",
     "markdown-it-br": "^1.0.0",
-    "nanoid": "^3.1.23",
+    "nanoid": "^3.1.30",
     "nuxt": "^2.15.7",
     "nuxt-precompress": "^0.5.9",
     "nuxt-property-decorator": "^2.9.1",
