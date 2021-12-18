@@ -110,7 +110,7 @@
               <v-checkbox
                 v-model="level.public"
                 block
-                label="一般公開する(テストプレイ後に選択できます)"
+                label="一般公開する（チェックを外すと自分だけのテストサーバーに公開されます）"
                 :disabled="!isUpdateForm"
               />
             </v-col>
